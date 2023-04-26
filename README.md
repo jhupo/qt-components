@@ -1,1 +1,1 @@
-# qt-components
+# qt-extensionsystem
