@@ -4,11 +4,11 @@ include($$top_srcdir/components.pri)
 QT                      +=      core gui widgets svg xml network
 TARGET                   =      examples
 TEMPLATE                 =      app
-DESTDIR                  =      $$top_builddir/builds/bin
-MOC_DIR                 +=      $$top_builddir/builds/examples/moc
-UI_DIR                  +=      $$top_builddir/builds/examples/uic
-RCC_DIR                 +=      $$top_builddir/builds/examples/rcc
-OBJECTS_DIR             +=      $$top_builddir/builds/examples/obj
+DESTDIR                  =      $$top_builddir/bin
+MOC_DIR                 +=      $$top_builddir/examples/moc
+UI_DIR                  +=      $$top_builddir/examples/uic
+RCC_DIR                 +=      $$top_builddir/examples/rcc
+OBJECTS_DIR             +=      $$top_builddir/examples/obj
 CONFIG                  -=      debug_and_release
 DEFINES                 +=
 QMAKE_CXXFLAGS_RELEASE   =      $$QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO
