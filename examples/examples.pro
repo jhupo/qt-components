@@ -1,7 +1,7 @@
 include($$top_srcdir/library.pri)
 include($$top_srcdir/components.pri)
 
-QT                      +=      core gui widgets svg xml network
+QT                      +=      core gui widgets svg
 TARGET                   =      examples
 TEMPLATE                 =      app
 DESTDIR                  =      $$top_builddir/bin

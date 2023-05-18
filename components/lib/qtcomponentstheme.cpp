@@ -1,0 +1,152 @@
+#include "qtcomponentstheme.h"
+#include "constants.h"
+
+#include <QMap>
+#include <QColor>
+#include <QIcon>
+#include <QPainter>
+#include <QFont>
+#include <QWidget>
+#include <QSvgRenderer>
+
+namespace Components {
+
+    class QtComponentsThemePrivate
+    {
+        Q_DISABLE_COPY(QtComponentsThemePrivate)
+        Q_DECLARE_PUBLIC(QtComponentsTheme)
+
+    public:
+
+        QtComponentsThemePrivate(QtComponentsTheme* q);
+        virtual~QtComponentsThemePrivate();
+
+        void init();
+
+        QtComponentsTheme*const                 q_ptr;
+
+        QMap<_Color,QColor>                     _colors;
+
+    };
+
+    QtComponentsThemePrivate::QtComponentsThemePrivate(QtComponentsTheme *q)
+        : q_ptr(q)
+    {
+        Q_ASSERT(q);
+    }
+
+    QtComponentsThemePrivate::~QtComponentsThemePrivate()
+    {
+
+    }
+
+    void QtComponentsThemePrivate::init()
+    {
+        static const QColor palette[] = {
+            QColor("#fff1f0"), QColor("#ffccc7"), QColor("#ffa39e"), QColor("#ff7875"), QColor("#ff4d4f"),
+            QColor("#f5222d"), QColor("#cf1322"), QColor("#a8071a"), QColor("#820014"), QColor("#5c0011"),
+            QColor("#fff2e8"), QColor("#ffd8bf"), QColor("#ffbb96"), QColor("#ff9c6e"), QColor("#ff7a45"),
+            QColor("#fa541c"), QColor("#d4380d"), QColor("#ad2102"), QColor("#871400"), QColor("#610b00"),
+            QColor("#fff7e6"), QColor("#ffe7ba"), QColor("#ffd591"), QColor("#ffc069"), QColor("#ffa940"),
+            QColor("#fa8c16"), QColor("#d46b08"), QColor("#ad4e00"), QColor("#873800"), QColor("#612500"),
+            QColor("#fffbe6"), QColor("#fff1b8"), QColor("#ffe58f"), QColor("#ffd666"), QColor("#ffc53d"),
+            QColor("#faad14"), QColor("#d48806"), QColor("#ad6800"), QColor("#874d00"), QColor("#613400"),
+            QColor("#feffe6"), QColor("#ffffb8"), QColor("#fffb8f"), QColor("#fff566"), QColor("#ffec3d"),
+            QColor("#fadb14"), QColor("#d4b106"), QColor("#ad8b00"), QColor("#876800"), QColor("#614700"),
+            QColor("#fcffe6"), QColor("#f4ffb8"), QColor("#eaff8f"), QColor("#d3f261"), QColor("#bae637"),
+            QColor("#a0d911"), QColor("#7cb305"), QColor("#5b8c00"), QColor("#3f6600"), QColor("#254000"),
+            QColor("#f6ffed"), QColor("#d9f7be"), QColor("#b7eb8f"), QColor("#95de64"), QColor("#73d13d"),
+            QColor("#52c41a"), QColor("#389e0d"), QColor("#237804"), QColor("#135200"), QColor("#092b00"),
+            QColor("#e6fffb"), QColor("#b5f5ec"), QColor("#87e8de"), QColor("#5cdbd3"), QColor("#36cfc9"),
+            QColor("#13c2c2"), QColor("#08979c"), QColor("#006d75"), QColor("#00474f"), QColor("#002329"),
+            QColor("#e6f7ff"), QColor("#bae7ff"), QColor("#91d5ff"), QColor("#69c0ff"), QColor("#40a9ff"),
+            QColor("#1890ff"), QColor("#096dd9"), QColor("#0050b3"), QColor("#003a8c"), QColor("#002766"),
+            QColor("#f0f5ff"), QColor("#d6e4ff"), QColor("#adc6ff"), QColor("#85a5ff"), QColor("#597ef7"),
+            QColor("#2f54eb"), QColor("#1d39c4"), QColor("#10239e"), QColor("#061178"), QColor("#030852"),
+            QColor("#f9f0ff"), QColor("#efdbff"), QColor("#d3adf7"), QColor("#b37feb"), QColor("#9254de"),
+            QColor("#722ed1"), QColor("#531dab"), QColor("#391085"), QColor("#22075e"), QColor("#120338"),
+            QColor("#fff0f6"), QColor("#ffd6e7"), QColor("#ffadd2"), QColor("#ff85c0"), QColor("#f759ab"),
+            QColor("#eb2f96"), QColor("#c41d7f"), QColor("#9e1068"), QColor("#780650"), QColor("#520339"),
+            QColor("#ffffff"), QColor("#fafafa"), QColor("#f5f5f5"), QColor("#f0f0f0"), QColor("#d9d9d9"),
+            QColor("#bfbfbf"), QColor("#8c8c8c"), QColor("#595959"), QColor("#434343"), QColor("#262626"),
+            QColor("#1f1f1f"), QColor("#141414"), QColor("#000000")
+        };
+
+        for(int i = 0; i <= black; ++i)
+            _colors.insert(static_cast<_Color>(i),palette[i]);
+    }
+
+    QtComponentsTheme::QtComponentsTheme(QObject *parent)
+        : QObject(parent)
+        , d_ptr(new QtComponentsThemePrivate(this))
+    {
+        d_func()->init();
+    }
+
+    QtComponentsTheme::~QtComponentsTheme()
+    {
+
+    }
+
+    QtComponentsTheme *QtComponentsTheme::inst()
+    {
+        static QtComponentsTheme theme;
+        return &theme;
+    }
+
+    QColor QtComponentsTheme::color(const _Color color)
+    {
+        Q_D(QtComponentsTheme);
+        return d->_colors.value(color);
+    }
+
+    QIcon QtComponentsTheme::icon(const QString &category, const QString &icon, QString &state)
+    {
+        if(!state.isEmpty())
+            state.insert(0,"_");
+        QSvgRenderer renderer(QString(":/icons/icons/%1/ic_%2%3.svg").arg(category).arg(icon).arg(state));
+        QImage image(renderer.defaultSize(), QImage::Format_ARGB32);
+        image.fill(Qt::transparent);
+        QPainter painter(&image);
+        renderer.render(&painter);
+        return QPixmap::fromImage(image);
+    }
+
+    QIcon QtComponentsTheme::icon(const QString &details)
+    {
+        if(details.isEmpty())
+            return QIcon();
+        QSvgRenderer renderer;
+        if(!renderer.load(details.toUtf8()))
+            return QIcon();
+        QImage image(renderer.defaultSize(), QImage::Format_ARGB32);
+        image.fill(Qt::transparent);
+        QPainter painter(&image);
+        renderer.render(&painter);
+        return QPixmap::fromImage(image);
+    }
+
+    QPixmap QtComponentsTheme::icon2Color(const QPixmap &pixmap, const QColor &color)
+    {
+        if (!color.isValid())
+            return pixmap;
+        QPixmap map = pixmap;
+        QPainter painter(&map);
+        painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+        painter.fillRect(map.rect(), color);
+        return map;
+    }
+
+    QPixmap QtComponentsTheme::icon2Color(const QPixmap &pixmap, const _Color color)
+    {
+        return icon2Color(pixmap,QtComponentsTheme::inst()->color(color));
+    }
+
+    QString QtComponentsTheme::elidedText(const QString &text, QWidget *widget, const quint16 &margin, Qt::TextElideMode mode)
+    {
+        return widget->fontMetrics().elidedText(text, mode, widget->width() + margin);
+    }
+
+
+
+}
