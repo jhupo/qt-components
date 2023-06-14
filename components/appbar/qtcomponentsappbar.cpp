@@ -20,7 +20,7 @@ namespace Components {
         QtComponentsAppBar*const                q_ptr;
         QColor                                  _foregroundColor;
         QColor                                  _backgroundColor;
-        qreal                                   _cornerRadius;
+        qreal                                   _radius;
     };
 
     QtComponentsAppBarPrivate::QtComponentsAppBarPrivate(QtComponentsAppBar *q)
@@ -38,7 +38,7 @@ namespace Components {
     {
         Q_Q(QtComponentsAppBar);
 
-        _cornerRadius = 3.;
+        _radius = 8.;
 
         QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect;
         effect->setBlurRadius(16);
@@ -93,17 +93,17 @@ namespace Components {
         return d->_backgroundColor;
     }
 
-    void QtComponentsAppBar::setCornerRadius(const qreal radius)
+    void QtComponentsAppBar::setRadius(const qreal radius)
     {
         Q_D(QtComponentsAppBar);
-        d->_cornerRadius = radius;
+        d->_radius = radius;
         update();
     }
 
-    qreal QtComponentsAppBar::cornerRadius() const
+    qreal QtComponentsAppBar::radius() const
     {
         Q_D(const QtComponentsAppBar);
-        return d->_cornerRadius;
+        return d->_radius;
     }
 
     void QtComponentsAppBar::paintEvent(QPaintEvent *event)
@@ -115,7 +115,7 @@ namespace Components {
         painter.setRenderHint(QPainter::Antialiasing);
 
         QPainterPath path;
-        path.addRoundedRect(rect(),d->_cornerRadius,d->_cornerRadius);
+        path.addRoundedRect(rect(),QtComponentsTheme::cornerRadius(d->_radius,rect()),QtComponentsTheme::cornerRadius(d->_radius,rect()));
         painter.setClipPath(path);
 
         painter.setPen(Qt::NoPen);

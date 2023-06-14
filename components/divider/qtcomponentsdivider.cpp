@@ -15,19 +15,13 @@ namespace Components {
         QtComponentsDividerPrivate(QtComponentsDivider* q);
         ~QtComponentsDividerPrivate();
 
-        enum Theme{Text,Icon,Normal};
-
         void init();
 
         QtComponentsDivider*const               q_ptr;
         QColor                                  _color;
-        QString                                 _text;
-        QIcon                                   _icon;
-        Theme                                   _theme;
         Qt::AlignmentFlag                       _alignment;
         Qt::PenStyle                            _penStyle;
         Qt::Orientation                         _orientation;
-        QSize                                   _iconSize;
     };
 
     QtComponentsDivider::QtComponentsDivider(QWidget *parent)
@@ -61,47 +55,6 @@ namespace Components {
     {
         Q_D(const QtComponentsDivider);
         return d->_color;
-    }
-
-    void QtComponentsDivider::setText(const QString &text)
-    {
-        Q_D(QtComponentsDivider);
-        d->_text = text;
-        d->_theme = QtComponentsDividerPrivate::Text;
-        update();
-    }
-
-    QString QtComponentsDivider::text() const
-    {
-        Q_D(const QtComponentsDivider);
-        return d->_text;
-    }
-
-    void QtComponentsDivider::setIcon(const QIcon &icon)
-    {
-        Q_D(QtComponentsDivider);
-        d->_icon = icon;
-        d->_theme = QtComponentsDividerPrivate::Icon;
-        update();
-    }
-
-    QIcon QtComponentsDivider::icon() const
-    {
-        Q_D(const QtComponentsDivider);
-        return d->_icon;
-    }
-
-    void QtComponentsDivider::setIconSize(const QSize &size)
-    {
-        Q_D(QtComponentsDivider);
-        d->_iconSize = size;
-        updateGeometry();
-    }
-
-    QSize QtComponentsDivider::iconSize() const
-    {
-        Q_D(const QtComponentsDivider);
-        return d->_iconSize;
     }
 
     void QtComponentsDivider::setAlignment(Qt::AlignmentFlag flag)
@@ -150,14 +103,7 @@ namespace Components {
 
         if(Qt::Vertical == d->_orientation)
             return QSize(1,-1);
-        else
-            if(QtComponentsDividerPrivate::Icon == d->_theme)
-                return QSize(-1,d->_iconSize.height());
-            else if(QtComponentsDividerPrivate::Normal == d->_theme)
-                return QSize(-1,1);
-            else
-                return QSize(-1,fontMetrics().size(Qt::TextSingleLine, text()).height());
-        return QWidget::sizeHint();
+        return QSize(-1,1);;
     }
 
     void QtComponentsDivider::paintEvent(QPaintEvent *event)
@@ -194,8 +140,6 @@ namespace Components {
     void QtComponentsDividerPrivate::init()
     {
         _color = QtComponentsTheme::inst()->color(cyan400);
-        _theme = Normal;
-        _iconSize = QSize(21,21);
         _alignment = Qt::AlignCenter;
         _orientation = Qt::Horizontal;
         _penStyle = Qt::DotLine;

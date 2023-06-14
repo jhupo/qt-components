@@ -24,15 +24,6 @@ namespace Components {
         void setColor(const QColor& color);
         QColor color()const;
 
-        void setText(const QString& text);
-        QString text()const;
-
-        void setIcon(const QIcon& icon);
-        QIcon icon()const;
-
-        void setIconSize(const QSize& size);
-        QSize iconSize()const;
-
         void setAlignment(Qt::AlignmentFlag flag);
         Qt::AlignmentFlag alignment()const;
 

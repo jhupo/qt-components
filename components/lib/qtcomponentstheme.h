@@ -26,6 +26,8 @@ namespace Components {
 
         QColor color(const _Color color);
 
+        void setColor(const _Color key, const QColor& color);
+
         static QIcon icon(const QString& category, const QString& icon, QString& state = QString());
 
         static QIcon icon(const QString& details);
@@ -35,6 +37,8 @@ namespace Components {
         static QPixmap icon2Color(const QPixmap &pixmap, const _Color color);
 
         static QString elidedText(const QString& text,QWidget* widget,const quint16& margin = 9, Qt::TextElideMode mode = Qt::ElideMiddle);
+
+        static qreal cornerRadius(const qreal percentage, const QRect& rect);
 
     protected:
 

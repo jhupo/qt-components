@@ -6,6 +6,7 @@
 #include <QIcon>
 #include <QPainter>
 #include <QFont>
+#include <QFile>
 #include <QWidget>
 #include <QSvgRenderer>
 
@@ -100,16 +101,22 @@ namespace Components {
         return d->_colors.value(color);
     }
 
+    void QtComponentsTheme::setColor(const _Color key, const QColor &color)
+    {
+        Q_D(QtComponentsTheme);
+        d->_colors.insert(key,color);
+    }
+
     QIcon QtComponentsTheme::icon(const QString &category, const QString &icon, QString &state)
     {
         if(!state.isEmpty())
             state.insert(0,"_");
-        QSvgRenderer renderer(QString(":/icons/icons/%1/ic_%2%3.svg").arg(category).arg(icon).arg(state));
-        QImage image(renderer.defaultSize(), QImage::Format_ARGB32);
-        image.fill(Qt::transparent);
-        QPainter painter(&image);
-        renderer.render(&painter);
-        return QPixmap::fromImage(image);
+        QFile file(QString(":/icons/icons/%1/ic_%2%3.svg").arg(category).arg(icon).arg(state));
+        if(!file.open(QFile::ReadOnly))
+            return QIcon();
+        QIcon image = QtComponentsTheme::icon(file.readAll());
+        file.close();
+        return image;
     }
 
     QIcon QtComponentsTheme::icon(const QString &details)
@@ -139,12 +146,17 @@ namespace Components {
 
     QPixmap QtComponentsTheme::icon2Color(const QPixmap &pixmap, const _Color color)
     {
-        return icon2Color(pixmap,QtComponentsTheme::inst()->color(color));
+        return QtComponentsTheme::icon2Color(pixmap,QtComponentsTheme::inst()->color(color));
     }
 
     QString QtComponentsTheme::elidedText(const QString &text, QWidget *widget, const quint16 &margin, Qt::TextElideMode mode)
     {
         return widget->fontMetrics().elidedText(text, mode, widget->width() + margin);
+    }
+
+    qreal QtComponentsTheme::cornerRadius(const qreal percentage, const QRect &rect)
+    {
+        return qMin(rect.width(),rect.height()) * percentage / 100.;
     }
 
 

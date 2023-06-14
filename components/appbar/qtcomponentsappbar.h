@@ -29,8 +29,8 @@ namespace Components {
         void setBackgroundColor(const QColor &color);
         QColor backgroundColor() const;
 
-        void setCornerRadius(const qreal radius);
-        qreal cornerRadius()const;
+        void setRadius(const qreal radius);
+        qreal radius()const;
 
         inline QHBoxLayout *appBarLayout() const;
 
