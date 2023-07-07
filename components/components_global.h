@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QtGlobal>
+#include <QLoggingCategory>
 
 #if defined(COMPONENTS_LIBRARY)
 #  define COMPONENTS_EXPORT Q_DECL_EXPORT
@@ -12,5 +13,6 @@
 #  define COMPONENTS_EXPORT Q_DECL_IMPORT
 #endif
 
+Q_DECLARE_LOGGING_CATEGORY(logger_components)
 
 #endif

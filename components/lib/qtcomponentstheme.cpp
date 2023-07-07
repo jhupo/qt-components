@@ -10,6 +10,8 @@
 #include <QWidget>
 #include <QSvgRenderer>
 
+Q_LOGGING_CATEGORY(logger_components,"logger.components")
+
 namespace Components {
 
     class QtComponentsThemePrivate
@@ -89,10 +91,10 @@ namespace Components {
 
     }
 
+    Q_GLOBAL_STATIC(QtComponentsTheme,_theme_inst_)
     QtComponentsTheme *QtComponentsTheme::inst()
     {
-        static QtComponentsTheme theme;
-        return &theme;
+        return _theme_inst_;
     }
 
     QColor QtComponentsTheme::color(const _Color color)

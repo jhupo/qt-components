@@ -15,12 +15,10 @@ namespace Components {
         Q_DISABLE_COPY(QtComponentsTheme)
         Q_DECLARE_PRIVATE(QtComponentsTheme)
 
-    private:
+    public:
 
         QtComponentsTheme(QObject* parent = Q_NULLPTR);
         virtual~QtComponentsTheme();
-
-    public:
 
         static QtComponentsTheme* inst();
 
