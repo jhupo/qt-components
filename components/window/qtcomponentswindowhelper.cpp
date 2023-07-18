@@ -161,6 +161,30 @@ namespace Components {
 
     }
 
+    void QtComponentsWindowHelper::setDragWindow(bool drag)
+    {
+        Q_D(QtComponentsWindowHelper);
+        d->_drag = drag;
+    }
+
+    bool QtComponentsWindowHelper::dragWindow() const
+    {
+        Q_D(const QtComponentsWindowHelper);
+        return d->_drag;
+    }
+
+    void QtComponentsWindowHelper::setMoveWindow(bool move)
+    {
+        Q_D(QtComponentsWindowHelper);
+        d->_move = move;
+    }
+
+    bool QtComponentsWindowHelper::moveWinodw() const
+    {
+        Q_D(const QtComponentsWindowHelper);
+        return d->_move;
+    }
+
     bool QtComponentsWindowHelper::eventFilter(QObject *watched, QEvent *event)
     {
         Q_D(QtComponentsWindowHelper);

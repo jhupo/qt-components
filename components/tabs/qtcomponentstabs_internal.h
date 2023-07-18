@@ -60,7 +60,7 @@ namespace Components {
 
     protected:
 
-        virtual void paintEvent(QPaintEvent *e);
+        virtual void paintEvent(QPaintEvent *);
 
     protected Q_SLOTS:
 

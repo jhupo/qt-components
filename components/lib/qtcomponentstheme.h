@@ -36,7 +36,7 @@ namespace Components {
 
         static QString elidedText(const QString& text,QWidget* widget,const quint16& margin = 9, Qt::TextElideMode mode = Qt::ElideMiddle);
 
-        static qreal cornerRadius(const qreal percentage, const QRect& rect);
+        static qreal radiusRatios(const qreal percentage, const QRect& rect);
 
     protected:
 

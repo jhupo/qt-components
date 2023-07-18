@@ -18,8 +18,7 @@ namespace Components {
         void init();
 
         QtComponentsAppBar*const                q_ptr;
-        QColor                                  _foregroundColor;
-        QColor                                  _backgroundColor;
+        QColor                                  _color;
         qreal                                   _radius;
     };
 
@@ -50,8 +49,7 @@ namespace Components {
         QHBoxLayout *layout = new QHBoxLayout;
         q->setLayout(layout);
 
-        q->setBackgroundColor(QtComponentsTheme::inst()->color(cyan600));
-        q->setForegroundColor(QtComponentsTheme::inst()->color(darkGray));
+        _color = Qt::white;
 
     }
 
@@ -67,60 +65,50 @@ namespace Components {
 
     }
 
-    void QtComponentsAppBar::setForegroundColor(const QColor &color)
+    void QtComponentsAppBar::setColor(const QColor &color)
     {
         Q_D(QtComponentsAppBar);
-        d->_foregroundColor = color;
+        d->_color = color;
         update();
     }
 
-    QColor QtComponentsAppBar::foregroundColor() const
+    QColor QtComponentsAppBar::color() const
     {
         Q_D(const QtComponentsAppBar);
-        return d->_foregroundColor;
+        return d->_color;
     }
 
-    void QtComponentsAppBar::setBackgroundColor(const QColor &color)
-    {
-        Q_D(QtComponentsAppBar);
-        d->_backgroundColor = color;
-        update();
-    }
-
-    QColor QtComponentsAppBar::backgroundColor() const
-    {
-        Q_D(const QtComponentsAppBar);
-        return d->_backgroundColor;
-    }
-
-    void QtComponentsAppBar::setRadius(const qreal radius)
+    void QtComponentsAppBar::setRadiusRatios(const qreal radius)
     {
         Q_D(QtComponentsAppBar);
         d->_radius = radius;
         update();
     }
 
-    qreal QtComponentsAppBar::radius() const
+    qreal QtComponentsAppBar::radiusRatios() const
     {
         Q_D(const QtComponentsAppBar);
         return d->_radius;
     }
 
-    void QtComponentsAppBar::paintEvent(QPaintEvent *event)
+    void QtComponentsAppBar::paintEvent(QPaintEvent *)
     {
-        Q_UNUSED(event);
         Q_D(QtComponentsAppBar);
 
         QPainter painter(this);
         painter.setRenderHint(QPainter::Antialiasing);
+        painter.fillRect(rect(),Qt::transparent);
+
+        const QRect r = rect().adjusted(0,0,-1,-1);
 
         QPainterPath path;
-        path.addRoundedRect(rect(),QtComponentsTheme::cornerRadius(d->_radius,rect()),QtComponentsTheme::cornerRadius(d->_radius,rect()));
+        path.addRoundedRect(r, QtComponentsTheme::radiusRatios(d->_radius,r), QtComponentsTheme::radiusRatios(d->_radius,r));
         painter.setClipPath(path);
+        painter.setClipping(true);
 
         painter.setPen(Qt::NoPen);
-        painter.setBrush(backgroundColor());
-        painter.drawRect(rect());
+        painter.setBrush(d->_color);
+        painter.drawRect(r);
     }
 
 }

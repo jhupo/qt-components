@@ -108,14 +108,13 @@ namespace Components {
         return fontMetrics().size(Qt::TextSingleLine, text()) + QSize(10,10);
     }
 
-    void QtComponentsTab::paintEvent(QPaintEvent *e)
+    void QtComponentsTab::paintEvent(QPaintEvent *)
     {
-        Q_UNUSED(e);
         QPainter painter(this);
         painter.setFont(_tabs->font());
         painter.setRenderHint(QPainter::Antialiasing);
         painter.setBrush(Qt::NoBrush);
-        painter.setPen(_active ? _tabs->activeColor() : _tabs->foregroundColor());
+        painter.setPen(_active ? _tabs->activeColor() : _tabs->color());
         painter.drawText(rect(), Qt::AlignCenter, text());
     }
 

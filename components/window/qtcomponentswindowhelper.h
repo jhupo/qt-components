@@ -18,6 +18,12 @@ namespace Components {
         QtComponentsWindowHelper(QWidget* parent,bool drag = false, bool move = true);
         virtual~QtComponentsWindowHelper();
 
+        void setDragWindow(bool drag);
+        bool dragWindow()const;
+
+        void setMoveWindow(bool move);
+        bool moveWinodw()const;
+
     protected:
 
         virtual bool eventFilter(QObject *watched, QEvent *event);

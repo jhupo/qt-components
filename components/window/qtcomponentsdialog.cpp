@@ -42,6 +42,8 @@ namespace Components {
         QCoreApplication::instance()->installNativeEventFilter(&_dwm_filter);
 #endif
         _helper = new QtComponentsWindowHelper(q);
+
+        q->setObjectName("QtComponentsDialog");
     }
 
     QtComponentsDialog::QtComponentsDialog(QWidget *parent)

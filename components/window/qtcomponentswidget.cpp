@@ -56,6 +56,8 @@ namespace Components{
         QCoreApplication::instance()->installNativeEventFilter(&_dwm_filter);
 #endif
         _helper = new QtComponentsWindowHelper(q,true);
+
+        q->setObjectName("QtComponentsWidget");
     }
 
 

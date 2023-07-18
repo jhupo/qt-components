@@ -156,7 +156,7 @@ namespace Components {
         return widget->fontMetrics().elidedText(text, mode, widget->width() + margin);
     }
 
-    qreal QtComponentsTheme::cornerRadius(const qreal percentage, const QRect &rect)
+    qreal QtComponentsTheme::radiusRatios(const qreal percentage, const QRect &rect)
     {
         return qMin(rect.width(),rect.height()) * percentage / 100.;
     }
