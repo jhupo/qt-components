@@ -20,8 +20,12 @@ namespace Components {
         QtComponentsDialog(QWidget* parent = Q_NULLPTR);
         virtual~QtComponentsDialog();
 
+        void setWindowTitleBar(QWidget* title);
+        QWidget *windowTitleBar()const;
+
     protected:
 
+        virtual bool eventFilter(QObject *watched, QEvent *event);
         const QScopedPointer<QtComponentsDialogPrivate>         d_ptr;
 
     };

@@ -133,7 +133,7 @@ namespace Components {
         _markDisabled = false;
         _markColor = Qt::red;
 
-        q->setSizePolicy(QSizePolicy::Ignored,QSizePolicy::Ignored);
+        q->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 
         QObject::connect(q,SIGNAL(clicked()),q,SLOT(cleanMark()));
     }

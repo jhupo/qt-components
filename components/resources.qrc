@@ -1,4 +1,7 @@
 <RCC>
-	<qresource prefix="/icons">
-	</qresource>
+    <qresource prefix="/icons">
+        <file>icons/window/ic_close.svg</file>
+        <file>icons/window/ic_menu.svg</file>
+        <file>icons/window/ic_minus.svg</file>
+    </qresource>
 </RCC>

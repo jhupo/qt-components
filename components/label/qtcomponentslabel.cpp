@@ -1,5 +1,6 @@
 #include "qtcomponentslabel.h"
 
+#include <QIcon>
 
 namespace Components {
 
@@ -24,6 +25,11 @@ namespace Components {
     QColor QtComponentsLabel::color() const
     {
         return palette().color(QPalette::WindowText);
+    }
+
+    void QtComponentsLabel::setIcon(const QIcon &icon)
+    {
+        setPixmap(icon.pixmap(size()));
     }
 
 }

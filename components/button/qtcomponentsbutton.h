@@ -24,6 +24,10 @@ namespace Components {
         void setRadiusRatios(qreal radius);
         qreal radiusRatios() const;
 
+        virtual void setColor(const QColor& color,
+                              QPalette::ColorRole role = QPalette::Button,
+                              QPalette::ColorGroup group = QPalette::NColorGroups);
+
         virtual QColor color(QPalette::ColorRole role)const;
 
     protected:

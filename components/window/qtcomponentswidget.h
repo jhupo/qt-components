@@ -20,8 +20,12 @@ namespace Components {
         QtComponentsWidget(QWidget* parent = Q_NULLPTR);
         virtual~QtComponentsWidget();
 
+        void setWindowTitleBar(QWidget* title);
+        QWidget *windowTitleBar()const;
+
     protected:
 
+        virtual bool eventFilter(QObject *watched, QEvent *event);
         const QScopedPointer<QtComponentsWidgetPrivate>     d_ptr;
 
     };

@@ -20,6 +20,10 @@ namespace Components {
         void setColor(const QColor& color);
         QColor color()const;
 
+    public Q_SLOTS:
+
+        void setIcon(const QIcon& icon);
+
     };
 
 }

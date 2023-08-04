@@ -76,6 +76,19 @@ namespace Components {
         return d->_radius;
     }
 
+    void QtComponentsButton::setColor(const QColor &color, QPalette::ColorRole role, QPalette::ColorGroup group)
+    {
+        QPalette pale = palette();
+        if(QPalette::NColorGroups != group){
+            pale.setColor(group,role,color);
+        }else{
+            pale.setColor(QPalette::Disabled,role,color);
+            pale.setColor(QPalette::Inactive,role,color);
+            pale.setColor(QPalette::Active,role,color);
+        }
+        setPalette(pale);
+    }
+
     QColor QtComponentsButton::color(QPalette::ColorRole role) const
     {
         return palette().color(!isEnabled() ?

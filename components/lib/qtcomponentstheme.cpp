@@ -27,7 +27,7 @@ namespace Components {
         void init();
 
         QtComponentsTheme*const                 q_ptr;
-
+        QString                                 _family;
         QMap<_Color,QColor>                     _colors;
 
     };
@@ -107,6 +107,23 @@ namespace Components {
     {
         Q_D(QtComponentsTheme);
         d->_colors.insert(key,color);
+    }
+
+    void QtComponentsTheme::setCurrentFontFamily(const QString &family)
+    {
+        Q_D(QtComponentsTheme);
+        d->_family = family;
+    }
+
+    QFont QtComponentsTheme::font(int pointSize, int weight, bool italic) const
+    {
+        Q_D(const QtComponentsTheme);
+        return font(d->_family,pointSize,weight,italic);
+    }
+
+    QFont QtComponentsTheme::font(const QString &family, int pointSize, int weight, bool italic)
+    {
+        return QFont(family,pointSize,weight,italic);
     }
 
     QIcon QtComponentsTheme::icon(const QString &category, const QString &icon, QString &state)

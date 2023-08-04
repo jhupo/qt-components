@@ -150,10 +150,18 @@ namespace Components {
         d->_move = move;
         d->_drag = drag;
         d->_window = parent;
-        if(!parent->testAttribute(Qt::WA_MouseTracking)){
-            parent->setAttribute(Qt::WA_MouseTracking);
+
+        if(parent->window()){
+            d->_window = parent->window();
+            if(drag){
+                d->_window->setAttribute(Qt::WA_MouseTracking);
+                d->_window->installEventFilter(this);
+            }
         }
+
+        parent->setAttribute(Qt::WA_MouseTracking);
         parent->installEventFilter(this);
+        setObjectName("QtComponentsWindowHelper");
     }
 
     QtComponentsWindowHelper::~QtComponentsWindowHelper()
@@ -192,41 +200,51 @@ namespace Components {
         switch (type) {
         case QEvent::MouseMove:
         {
-            QMouseEvent* mouseEvent = reinterpret_cast<QMouseEvent*>(event);
-            if(d->_drag){
-                Qt::CursorShape shape = Qt::ArrowCursor;
-                QtComponentsWindowHelperPrivate::CursorShapePos pos = QtComponentsWindowHelperPrivate::ArrowShape;
-                d->cursorShapeProperty(d->_window->rect(),mouseEvent->pos(),shape,pos);
-                d->_window->setCursor(shape);
-                if(d->_press){
-                    d->_window->setGeometry(d->overlayGeometry(d->_window->geometry(),mouseEvent->globalPos(),d->_cursorShapePos));
+            if(QMouseEvent* mouse = reinterpret_cast<QMouseEvent*>(event)){
+                if(d->_drag){
+                    Qt::CursorShape shape = Qt::ArrowCursor;
+                    QtComponentsWindowHelperPrivate::CursorShapePos pos = QtComponentsWindowHelperPrivate::ArrowShape;
+                    d->cursorShapeProperty(d->_window->rect(),mouse->pos(),shape,pos);
+                    d->_window->setCursor(shape);
+                    if(d->_press && watched == d->_window){
+                        d->_window->setGeometry(d->overlayGeometry(d->_window->geometry(),mouse->globalPos(),d->_cursorShapePos));
+                    }
                 }
-            }
-            if(d->_move && d->_press &&
-               QtComponentsWindowHelperPrivate::ArrowShape == d->_cursorShapePos){
-                QPoint pos = mouseEvent->pos();
-                int offsetX = pos.x() - d->_pos.x();
-                int offsetY = pos.y() - d->_pos.y();
-                d->_window->move(d->_window->x() + offsetX,d->_window->y() + offsetY);
+                if(d->_move && d->_press && watched == parent() &&
+                   QtComponentsWindowHelperPrivate::ArrowShape == d->_cursorShapePos){
+                    QPoint pos = mouse->pos();
+                    int offsetX = pos.x() - d->_pos.x();
+                    int offsetY = pos.y() - d->_pos.y();
+                    d->_window->move(d->_window->x() + offsetX,d->_window->y() + offsetY);
+                }
             }
             break;
         }
         case QEvent::MouseButtonPress:
         {
-            QMouseEvent* mouseEvent = reinterpret_cast<QMouseEvent*>(event);
-            d->_press = true;
-            d->_pos = mouseEvent->pos();
-            Qt::CursorShape shape = Qt::ArrowCursor;
-            d->cursorShapeProperty(d->_window->rect(),mouseEvent->pos(),shape,d->_cursorShapePos);
-            d->_window->setCursor(shape);
+            if(QMouseEvent* mouse = reinterpret_cast<QMouseEvent*>(event)){
+                if(Qt::LeftButton == mouse->button()){
+                    d->_press = true;
+                    d->_pos = mouse->pos();
+                    Qt::CursorShape shape = Qt::ArrowCursor;
+                    d->cursorShapeProperty(d->_window->rect(),mouse->pos(),shape,d->_cursorShapePos);
+                    if(d->_drag){
+                        d->_window->setCursor(shape);
+                    }
+                }
+            }
             break;
         }
         case QEvent::MouseButtonRelease:
         {
-            d->_press = false;
-            d->_pos = QPoint(0,0);
-            d->_cursorShapePos = QtComponentsWindowHelperPrivate::ArrowShape;
-            d->_window->setCursor(Qt::ArrowCursor);
+            if(QMouseEvent* mouse = reinterpret_cast<QMouseEvent*>(event)){
+                if(Qt::LeftButton == mouse->button()){
+                    d->_press = false;
+                    d->_pos = QPoint(0,0);
+                    d->_cursorShapePos = QtComponentsWindowHelperPrivate::ArrowShape;
+                    d->_window->setCursor(Qt::ArrowCursor);
+                }
+            }
             break;
         }
         default:

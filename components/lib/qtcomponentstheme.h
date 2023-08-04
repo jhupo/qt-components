@@ -26,6 +26,11 @@ namespace Components {
 
         void setColor(const _Color key, const QColor& color);
 
+        void setCurrentFontFamily(const QString& family);
+        QFont font(int pointSize = -1, int weight = -1, bool italic = false) const;
+
+        static QFont font(const QString& family, int pointSize = -1, int weight = -1, bool italic = false);
+
         static QIcon icon(const QString& category, const QString& icon, QString& state = QString());
 
         static QIcon icon(const QString& details);
