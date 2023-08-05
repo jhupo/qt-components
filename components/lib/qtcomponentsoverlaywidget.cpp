@@ -9,6 +9,8 @@ namespace Components {
     {
         if (parent)
             parent->installEventFilter(this);
+
+        setObjectName("QtComponentsOverlayWidget");
     }
 
     QtComponentsOverlayWidget::~QtComponentsOverlayWidget()
@@ -60,7 +62,5 @@ namespace Components {
             return QRect();
         return widget->rect();
     }
-
-
 
 }
