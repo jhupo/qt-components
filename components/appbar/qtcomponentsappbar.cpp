@@ -1,7 +1,9 @@
 #include "qtcomponentsappbar.h"
 #include "lib/qtcomponentstheme.h"
 
+#include <QEvent>
 #include <QPainter>
+#include <QBoxLayout>
 #include <QGraphicsDropShadowEffect>
 
 namespace Components {
@@ -12,18 +14,19 @@ namespace Components {
 
     public:
 
-        QtComponentsAppBarPrivate(QtComponentsAppBar* q);
+        QtComponentsAppBarPrivate(QtComponentsAppBar* q,Qt::Orientation orientation);
         ~QtComponentsAppBarPrivate();
 
         void init();
 
         QtComponentsAppBar*const                q_ptr;
-        QColor                                  _color;
-        qreal                                   _radius;
+        qreal                                   _ratios;
+        Qt::Orientation                         _orientation;
     };
 
-    QtComponentsAppBarPrivate::QtComponentsAppBarPrivate(QtComponentsAppBar *q)
+    QtComponentsAppBarPrivate::QtComponentsAppBarPrivate(QtComponentsAppBar *q, Qt::Orientation orientation)
         : q_ptr(q)
+        , _orientation(orientation)
     {
 
     }
@@ -37,7 +40,7 @@ namespace Components {
     {
         Q_Q(QtComponentsAppBar);
 
-        _radius = 8.;
+        q->setRoundedRadiusRatios(15);
 
         QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect;
         effect->setBlurRadius(16);
@@ -46,16 +49,16 @@ namespace Components {
 
         q->setGraphicsEffect(effect);
 
-        QHBoxLayout *layout = new QHBoxLayout;
-        q->setLayout(layout);
+        q->setColor(Qt::white);
+        q->setColor(Qt::transparent,QPalette::Shadow);
 
-        _color = Qt::white;
-
+        q->setLayout(new QBoxLayout(Qt::Vertical != _orientation ?
+                    QBoxLayout::LeftToRight : QBoxLayout::TopToBottom));
     }
 
-    QtComponentsAppBar::QtComponentsAppBar(QWidget *parent)
+    QtComponentsAppBar::QtComponentsAppBar(QWidget *parent, Qt::Orientation orientaion)
         : QWidget(parent)
-        , d_ptr(new QtComponentsAppBarPrivate(this))
+        , d_ptr(new QtComponentsAppBarPrivate(this,orientaion))
     {
         d_func()->init();
     }
@@ -65,30 +68,64 @@ namespace Components {
 
     }
 
-    void QtComponentsAppBar::setColor(const QColor &color)
+    void QtComponentsAppBar::setRoundedRadiusRatios(const qreal ratios)
     {
         Q_D(QtComponentsAppBar);
-        d->_color = color;
+        d->_ratios = ratios;
         update();
     }
 
-    QColor QtComponentsAppBar::color() const
+    qreal QtComponentsAppBar::roundedRadiusRatios() const
     {
         Q_D(const QtComponentsAppBar);
-        return d->_color;
+        return d->_ratios;
     }
 
-    void QtComponentsAppBar::setRadiusRatios(const qreal radius)
-    {
-        Q_D(QtComponentsAppBar);
-        d->_radius = radius;
-        update();
-    }
-
-    qreal QtComponentsAppBar::radiusRatios() const
+    qreal QtComponentsAppBar::roundedRadius() const
     {
         Q_D(const QtComponentsAppBar);
-        return d->_radius;
+        return QtComponentsTheme::radiusRatios(d->_ratios,rect());
+    }
+
+    void QtComponentsAppBar::setColor(const QColor &color, QPalette::ColorRole role, QPalette::ColorGroup group)
+    {
+        QPalette pale = palette();
+        if(QPalette::NColorGroups != group){
+            pale.setColor(group,role,color);
+        }else{
+            pale.setColor(QPalette::Disabled,role,color);
+            pale.setColor(QPalette::Inactive,role,color);
+            pale.setColor(QPalette::Active,role,color);
+        }
+        setPalette(pale);
+    }
+
+    QColor QtComponentsAppBar::color(QPalette::ColorRole role) const
+    {
+        return palette().color(!isEnabled() ?
+                QPalette::Disabled : underMouse() ?
+                                       QPalette::Active : QPalette::Inactive,role);
+    }
+
+    Qt::Orientation QtComponentsAppBar::orientaion() const
+    {
+        Q_D(const QtComponentsAppBar);
+        return d->_orientation;
+    }
+
+    bool QtComponentsAppBar::event(QEvent *event)
+    {
+        QEvent::Type type = event->type();
+        switch (type) {
+        case QEvent::Leave:
+        case QEvent::Enter:{
+            update();
+            break;
+        }
+        default:
+            break;
+        }
+        return QWidget::event(event);
     }
 
     void QtComponentsAppBar::paintEvent(QPaintEvent *)
@@ -99,16 +136,11 @@ namespace Components {
         painter.setRenderHint(QPainter::Antialiasing);
         painter.fillRect(rect(),Qt::transparent);
 
-        const QRect r = rect().adjusted(0,0,-1,-1);
+        painter.setPen(color(QPalette::Shadow));
+        painter.setBrush(color());
 
-        QPainterPath path;
-        path.addRoundedRect(r, QtComponentsTheme::radiusRatios(d->_radius,r), QtComponentsTheme::radiusRatios(d->_radius,r));
-        painter.setClipPath(path);
-        painter.setClipping(true);
+        painter.drawRoundedRect(rect(),roundedRadius(),roundedRadius());
 
-        painter.setPen(Qt::NoPen);
-        painter.setBrush(d->_color);
-        painter.drawRect(r);
     }
 
 }

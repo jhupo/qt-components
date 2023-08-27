@@ -119,9 +119,8 @@ namespace Components{
         QObject::connect(minus,SIGNAL(clicked()),q,SLOT(showMinimized()));
 
         Components::QtComponentsIconButton* close = new Components::QtComponentsIconButton(_titleBar);
-        close->setIconSize(QSize(16,16));
         close->setIcon(Components::QtComponentsTheme::icon("window","close"));
-        close->setColor(Qt::darkGray,QPalette::Button);
+        close->setColor(Qt::darkGray);
         close->setColor(Qt::red,QPalette::Button, QPalette::Active);
         QObject::connect(close,SIGNAL(clicked()),q,SLOT(close()));
 

@@ -12,7 +12,9 @@
 #else
 #  define COMPONENTS_EXPORT Q_DECL_IMPORT
 #endif
-
+#if (QT_VERSION < 0x050500)
+#undef qCInfo
+#define qCInfo qCCritical
+#endif
 Q_DECLARE_LOGGING_CATEGORY(logger_components)
-
 #endif

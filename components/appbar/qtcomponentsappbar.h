@@ -4,7 +4,6 @@
 #include "components_global.h"
 
 #include <QWidget>
-#include <QHBoxLayout>
 
 namespace Components {
 
@@ -18,29 +17,27 @@ namespace Components {
 
     public:
 
-        QtComponentsAppBar(QWidget* parent = Q_NULLPTR);
+        QtComponentsAppBar(QWidget* parent = Q_NULLPTR, Qt::Orientation orientaion = Qt::Horizontal);
         virtual~QtComponentsAppBar();
 
-        void setColor(const QColor& color);
-        QColor color()const;
+        void setRoundedRadiusRatios(const qreal ratios);
+        qreal roundedRadiusRatios()const;
 
-        void setRadiusRatios(const qreal radius);
-        qreal radiusRatios()const;
+        qreal roundedRadius()const;
 
-        inline QHBoxLayout *appBarLayout() const;
+        virtual void setColor(const QColor& color,
+                              QPalette::ColorRole role = QPalette::Window,
+                              QPalette::ColorGroup group = QPalette::NColorGroups);
+
+        virtual QColor color(QPalette::ColorRole role = QPalette::Window)const;
 
     protected:
-
+        Qt::Orientation orientaion()const;
         const QScopedPointer<QtComponentsAppBarPrivate>         d_ptr;
-
+        virtual bool event(QEvent *event);
         virtual void paintEvent(QPaintEvent *);
 
     };
-
-    inline QHBoxLayout *QtComponentsAppBar::appBarLayout() const
-    {
-        return static_cast<QHBoxLayout *>(layout());
-    }
 
 
 }

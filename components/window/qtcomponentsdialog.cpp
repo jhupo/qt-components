@@ -65,7 +65,6 @@ namespace Components {
         QObject::connect(q,SIGNAL(windowTitleChanged(QString)),title,SLOT(setText(QString)));
 
         Components::QtComponentsIconButton* close = new Components::QtComponentsIconButton(_titleBar);
-        close->setIconSize(QSize(16,16));
         close->setIcon(Components::QtComponentsTheme::icon("window","close"));
         close->setColor(Qt::darkGray,QPalette::Button);
         close->setColor(Qt::red,QPalette::Button, QPalette::Active);

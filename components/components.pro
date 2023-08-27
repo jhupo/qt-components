@@ -8,7 +8,7 @@ UI_DIR                  +=              $$top_builddir/components/uic
 RCC_DIR                 +=              $$top_builddir/components/rcc
 OBJECTS_DIR             +=              $$top_builddir/components/obj
 CONFIG                  -=              debug_and_release
-DEFINES                 +=              COMPONENTS_LIBRARY HAVE_CONFIG_H
+DEFINES                 +=              COMPONENTS_LIBRARY HAVE_CONFIG_H QT_MESSAGELOGCONTEXT
 QMAKE_CXXFLAGS_RELEASE   =              $$QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO
 QMAKE_LFLAGS_RELEASE     =              $$QMAKE_LFLAGS_RELEASE_WITH_DEBUGINFO
 

@@ -1,4 +1,5 @@
 #include "qtcomponentslabel.h"
+#include "lib/qtcomponentstheme.h"
 
 #include <QIcon>
 
@@ -29,7 +30,7 @@ namespace Components {
 
     void QtComponentsLabel::setIcon(const QIcon &icon)
     {
-        setPixmap(icon.pixmap(size()));
+        setPixmap(QtComponentsTheme::icon2Color(icon.pixmap(size()),color()));
     }
 
 }

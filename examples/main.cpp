@@ -1,31 +1,36 @@
 #include <QApplication>
 
 #include <QDebug>
+#include <QVBoxLayout>
 #include <QAbstractButton>
 
+#include <lib/qtcomponentstheme.h>
+#include <button/qtcomponentspushbutton.h>
+#include <button/qtcomponentsiconbutton.h>
+#include <appbar/qtcomponentsappbar.h>
 #include <divider/qtcomponentsdivider.h>
-#include <tabs/qtcomponentstabs.h>
 
 int main(int argc, char** argv)
 {
     QApplication a(argc, argv);
 
     QWidget w;
-    w.resize(500,100);
+    w.resize(500,400);
+    w.setPalette(QPalette(Qt::white));
+    //QVBoxLayout* layout = new QVBoxLayout(&w);
 
-    QVBoxLayout* layout = new QVBoxLayout(&w);
+    Components::QtComponentsIconButton* btn = new Components::QtComponentsIconButton(&w);
+    btn->move(100,100);
+    btn->resize(20,20);
+    btn->setIcon(Components::QtComponentsTheme::icon("window","menu"));
 
-    Components::QtComponentsTabs* tabs = new Components::QtComponentsTabs(&w);
-    tabs->addTab("1111111111");
-    tabs->addTab("2222222222");
-    QAbstractButton* btn = tabs->addTab("3333333");
-    qDebug()<<btn->geometry();
-    tabs->addTab("44444");
-    tabs->addTab("55555");
-    tabs->removeTab(btn);
-    layout->addWidget(tabs);
-    layout->addWidget(new Components::QtComponentsDivider);
-    layout->addStretch();
+    Components::QtComponentsAppBar* bar = new Components::QtComponentsAppBar(&w);
+    bar->resize(150,30);
+    bar->move(150,150);
+
+    Components::QtComponentsDivider* divider = new Components::QtComponentsDivider(&w);
+    divider->move(50,170);
+    divider->resize(1,150);
 
     w.show();
     return a.exec();

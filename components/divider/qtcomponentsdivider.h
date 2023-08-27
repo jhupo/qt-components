@@ -18,20 +18,16 @@ namespace Components {
     public:
 
         QtComponentsDivider(QWidget* parent = Q_NULLPTR);
-        QtComponentsDivider(Qt::Orientation orientation, QWidget* parent = Q_NULLPTR);
         virtual~QtComponentsDivider();
 
         void setColor(const QColor& color);
         QColor color()const;
 
-        void setAlignment(Qt::AlignmentFlag flag);
-        Qt::AlignmentFlag alignment()const;
-
         void setLineStyle(Qt::PenStyle style);
         Qt::PenStyle lineStyle()const;
 
-        void setOrientation(Qt::Orientation orientation);
-        Qt::Orientation orientation()const;
+        void setLineWidth(qreal width);
+        qreal lineWidth()const;
 
         virtual QSize sizeHint()const;
 
@@ -39,7 +35,7 @@ namespace Components {
 
         const QScopedPointer<QtComponentsDividerPrivate>            d_ptr;
 
-        virtual void paintEvent(QPaintEvent *event);
+        virtual void paintEvent(QPaintEvent *);
     };
 
 }

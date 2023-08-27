@@ -154,7 +154,7 @@ namespace Components {
 
     QPixmap QtComponentsTheme::icon2Color(const QPixmap &pixmap, const QColor &color)
     {
-        if (!color.isValid())
+        if (!color.isValid() || !color.alpha())
             return pixmap;
         QPixmap map = pixmap;
         QPainter painter(&map);

@@ -18,10 +18,8 @@ namespace Components {
         void init();
 
         QtComponentsDivider*const               q_ptr;
-        QColor                                  _color;
-        Qt::AlignmentFlag                       _alignment;
-        Qt::PenStyle                            _penStyle;
-        Qt::Orientation                         _orientation;
+        qreal                                   _lineWidth;
+        Qt::PenStyle                            _style;
     };
 
     QtComponentsDivider::QtComponentsDivider(QWidget *parent)
@@ -31,14 +29,6 @@ namespace Components {
         d_func()->init();
     }
 
-    QtComponentsDivider::QtComponentsDivider(Qt::Orientation orientation, QWidget *parent)
-        : QWidget(parent)
-        , d_ptr(new QtComponentsDividerPrivate(this))
-    {
-        d_func()->init();
-        d_ptr->_orientation = orientation;
-    }
-
     QtComponentsDivider::~QtComponentsDivider()
     {
 
@@ -46,54 +36,25 @@ namespace Components {
 
     void QtComponentsDivider::setColor(const QColor &color)
     {
-        Q_D(QtComponentsDivider);
-        d->_color = color;
-        update();
+        setPalette(QPalette(color));
     }
 
     QColor QtComponentsDivider::color() const
     {
-        Q_D(const QtComponentsDivider);
-        return d->_color;
-    }
-
-    void QtComponentsDivider::setAlignment(Qt::AlignmentFlag flag)
-    {
-        Q_D(QtComponentsDivider);
-        d->_alignment = flag;
-        update();
-    }
-
-    Qt::AlignmentFlag QtComponentsDivider::alignment() const
-    {
-        Q_D(const QtComponentsDivider);
-        return d->_alignment;
+        return palette().color(QPalette::Window);
     }
 
     void QtComponentsDivider::setLineStyle(Qt::PenStyle style)
     {
         Q_D(QtComponentsDivider);
-        d->_penStyle = style;
+        d->_style = style;
         update();
     }
 
     Qt::PenStyle QtComponentsDivider::lineStyle() const
     {
         Q_D(const QtComponentsDivider);
-        return d->_penStyle;
-    }
-
-    void QtComponentsDivider::setOrientation(Qt::Orientation orientation)
-    {
-        Q_D(QtComponentsDivider);
-        d->_orientation = orientation;
-        updateGeometry();
-    }
-
-    Qt::Orientation QtComponentsDivider::orientation() const
-    {
-        Q_D(const QtComponentsDivider);
-        return d->_orientation;
+        return d->_style;
     }
 
     QSize QtComponentsDivider::sizeHint() const
@@ -101,29 +62,26 @@ namespace Components {
         Q_D(const QtComponentsDivider);
         ensurePolished();
 
-        if(Qt::Vertical == d->_orientation)
-            return QSize(1,-1);
-        return QSize(-1,1);;
+        QSize s = QWidget::sizeHint();
+
+        s.width() > s.height() ?
+            s.setHeight(d->_lineWidth) :
+            s.setWidth(d->_lineWidth);
+
+        return s;
     }
 
-    void QtComponentsDivider::paintEvent(QPaintEvent *event)
+    void QtComponentsDivider::paintEvent(QPaintEvent *)
     {
-        Q_UNUSED(event);
-
         Q_D(QtComponentsDivider);
 
         QPainter painter(this);
-        painter.setRenderHints(QPainter::HighQualityAntialiasing|QPainter::SmoothPixmapTransform|QPainter::TextAntialiasing);
-
+        painter.setRenderHint(QPainter::Antialiasing);
         painter.fillRect(rect(),Qt::transparent);
 
-        painter.setPen(QPen(d->_color,1,d->_penStyle));
-        painter.setBrush(Qt::NoBrush);
+        painter.setPen(QPen(color(),d->_lineWidth,d->_style));
 
-        QPoint center = rect().center();
-        int halfWidth = rect().width() / 2;
-
-        painter.drawLine(QPoint(center.x() - halfWidth, center.y()),QPoint(center.x() + halfWidth, center.y()));
+        painter.drawLine(rect().topLeft(),rect().bottomRight());
     }
 
     QtComponentsDividerPrivate::QtComponentsDividerPrivate(QtComponentsDivider *q)
@@ -139,10 +97,11 @@ namespace Components {
 
     void QtComponentsDividerPrivate::init()
     {
-        _color = QtComponentsTheme::inst()->color(cyan400);
-        _alignment = Qt::AlignCenter;
-        _orientation = Qt::Horizontal;
-        _penStyle = Qt::DotLine;
+        Q_Q(QtComponentsDivider);
+
+        _lineWidth = 1;
+        _style = Qt::DotLine;
+        q->setColor(Qt::darkGray);
     }
 
 }

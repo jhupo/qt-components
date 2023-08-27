@@ -4,11 +4,9 @@
 #include "components_global.h"
 #include "appbar/qtcomponentsappbar.h"
 
-class QAbstractButton;
 
 namespace Components {
 
-    class QtComponentsButtonTab;
     class QtComponentsButtonTabsPrivate;
 
     class COMPONENTS_EXPORT QtComponentsButtonTabs : public QtComponentsAppBar
@@ -19,19 +17,13 @@ namespace Components {
 
     public:
 
-        QtComponentsButtonTabs(Qt::Orientation orientation = Qt::Horizontal, QWidget* parent = Q_NULLPTR);
+        QtComponentsButtonTabs(QWidget* parent = Q_NULLPTR, Qt::Orientation orientaion = Qt::Horizontal);
         virtual~QtComponentsButtonTabs();
 
-        void addTab(const QString& text);
-        void addTab(const QIcon& icon);
+        virtual void setCurrentIndex(int index);
+        virtual int currentIndex() const;
 
-        void setCurrentTab(QtComponentsButtonTab *tab);
-        void setCurrentTab(int index);
-        int currentIndex() const;
-
-        Qt::Orientation orientation()const;
-        void setAnimate(bool animate);
-        bool animate()const;
+        virtual Qt::Orientation orientaion()const;
 
     Q_SIGNALS:
 
@@ -39,7 +31,7 @@ namespace Components {
 
     protected:
 
-        void setTabActive(int index, bool active = true);
+        virtual void setTabActive(int index, bool active = true) = 0;
         const QScopedPointer<QtComponentsButtonTabsPrivate>         d_ptr;
 
     };
