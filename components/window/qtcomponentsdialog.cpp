@@ -47,10 +47,9 @@ namespace Components {
         q->setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
         extendFrameIntoStyle(q);
         extendFrameIntoClientArea(q,1,1,1,1);
-        QCoreApplication::instance()->installNativeEventFilter(&_dwm_filter);
 #endif
         _titleBar = new QWidget(q);
-        _titleBar->setMinimumHeight(46);
+        _titleBar->setMinimumHeight(35);
         _titleBar->setObjectName("QtComponentsDialogTitleBar");
         _titleBar->setStyleSheet(QStringLiteral("#QtComponentsDialogTitleBar {border-bottom: 1px solid #E9EBF0;}"));
 
@@ -66,8 +65,8 @@ namespace Components {
 
         Components::QtComponentsIconButton* close = new Components::QtComponentsIconButton(_titleBar);
         close->setIcon(Components::QtComponentsTheme::icon("window","close"));
-        close->setColor(Qt::darkGray,QPalette::Button);
-        close->setColor(Qt::red,QPalette::Button, QPalette::Active);
+        close->setColor(Qt::darkGray,QPalette::ButtonText);
+        close->setColor(Qt::red,QPalette::ButtonText, QPalette::Active);
         QObject::connect(close,SIGNAL(clicked()),q,SLOT(close()));
 
         layout->setContentsMargins(19,9,19,9);
@@ -99,20 +98,10 @@ namespace Components {
 
     }
 
-    void QtComponentsDialog::setWindowTitleBar(QWidget *title)
-    {
-        Q_D(QtComponentsDialog);
-        if(d->_titleBar){
-            delete d->_titleBar;
-        }
-        new QtComponentsWindowHelper(title);
-        d->_titleBar = title;
-    }
-
-    QWidget* QtComponentsDialog::windowTitleBar() const
+    QHBoxLayout *QtComponentsDialog::appBarLayout() const
     {
         Q_D(const QtComponentsDialog);
-        return d->_titleBar;
+        return qobject_cast<QHBoxLayout*>(d->_titleBar->layout());
     }
 
     bool QtComponentsDialog::eventFilter(QObject *watched, QEvent *event)

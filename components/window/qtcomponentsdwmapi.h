@@ -41,6 +41,13 @@ inline COMPONENTS_EXPORT void extendFrameIntoStyle(QWidget* window){
 }
 class COMPONENTS_EXPORT QtDwmapiNativeEventFilter : public QAbstractNativeEventFilter{
 public:
+    QtDwmapiNativeEventFilter(){
+        QCoreApplication::instance()->installNativeEventFilter(this);
+    }
+    virtual ~QtDwmapiNativeEventFilter(){
+        QCoreApplication::instance()->removeNativeEventFilter(this);
+    }
+
     virtual bool nativeEventFilter(const QByteArray &eventType, void *message, long *result){
         Q_UNUSED(eventType);
         MSG* msg = reinterpret_cast<MSG*>(message);
@@ -51,7 +58,6 @@ public:
         return false;
     }
 };
-static QtDwmapiNativeEventFilter _dwm_filter;
 #endif
 
 }

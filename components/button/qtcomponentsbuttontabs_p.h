@@ -4,12 +4,14 @@
 #include <QtGlobal>
 
 #include "lib/qtcomponentsoverlaywidget.h"
+#include "qtcomponentspushbutton.h"
 
 class QPropertyAnimation;
 
 namespace Components{
 
     class QtComponentsButtonTabs;
+    class QtComponentsTabsInkBar;
 
     class QtComponentsButtonTabsPrivate
     {
@@ -25,7 +27,10 @@ namespace Components{
 
         QtComponentsButtonTabs*const            q_ptr;
         int                                     _index;
-
+        bool                                    _animate;
+        bool                                    _checkable;
+        Qt::Edge                                _edge;
+        QtComponentsTabsInkBar*                 _inkBar;
     };
 
     class QtComponentsTabsInkBar : public QtComponentsOverlayWidget
@@ -57,7 +62,6 @@ namespace Components{
         QRect                                       _geometry;
         QRect                                       _previousGeometry;
         qreal                                       _tween;
-
     };
 
     inline void QtComponentsTabsInkBar::setTweenValue(qreal value)
@@ -70,6 +74,25 @@ namespace Components{
     {
         return _tween;
     }
+
+    class QtComponentsButtonTab : public QtComponentsPushButton
+    {
+        Q_OBJECT
+        Q_DISABLE_COPY(QtComponentsButtonTab)
+
+    public:
+
+        QtComponentsButtonTab(QtComponentsButtonTabs* parent);
+        virtual~QtComponentsButtonTab();
+
+    protected Q_SLOTS:
+
+        void activateTab();
+
+    private:
+
+        QtComponentsButtonTabs*const            _parent;
+    };
 
 }
 

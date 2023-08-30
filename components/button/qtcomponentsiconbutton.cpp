@@ -8,12 +8,14 @@ namespace Components {
     QtComponentsIconButton::QtComponentsIconButton(QWidget *parent)
         : QtComponentsPushButton(parent)
     {
+        setUserData(0);
         setDotDisabled(true);
-        setColor(Qt::darkGray);
+        setUseThemeColors(true);
+        setColor(Qt::darkGray,QPalette::ButtonText);
         setColor(Qt::red,QPalette::Foreground);
         setColor(Qt::transparent,QPalette::Shadow);
-        setColor(Qt::transparent,QPalette::Window);
-        setColor(QtComponentsTheme::inst()->color(Components::gray400),QPalette::Window,QPalette::Active);
+        setColor(Qt::transparent,QPalette::Button);
+        setColor(QtComponentsTheme::inst()->color(Components::gray400),QPalette::Button,QPalette::Active);
         setRoundedRadiusRatios(0);
         setIconSize(QSize(16,16));
         setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -45,11 +47,15 @@ namespace Components {
         painter.setRenderHint(QPainter::Antialiasing);
         painter.fillRect(rect(),Qt::transparent);
 
-        QPixmap pixmap = QtComponentsTheme::icon2Color(icon().pixmap(iconSize()),color());
+        QPixmap pixmap = icon().pixmap(iconSize());
+
+        if(useThemeColors()){
+            pixmap = QtComponentsTheme::icon2Color(icon().pixmap(iconSize()),color(QPalette::ButtonText));
+        }
 
         if(size() != iconSize()){
             painter.setPen(color(QPalette::Shadow));
-            painter.setBrush(color(QPalette::Window));
+            painter.setBrush(color(QPalette::Button));
             painter.drawRoundedRect(rect(),roundedRadius(),roundedRadius());
             QRect r = QRect(rect().center(),iconSize());
             r.moveCenter(rect().center());

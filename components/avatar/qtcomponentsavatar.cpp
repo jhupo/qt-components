@@ -51,6 +51,8 @@ namespace Components {
         QSizePolicy policy(QSizePolicy::MinimumExpanding,
                            QSizePolicy::MinimumExpanding);
         q->setSizePolicy(policy);
+        q->setBackgroundColor(Qt::darkGray);
+        q->setTextColor(Qt::darkMagenta);
     }
 
     QtComponentsAvatar::QtComponentsAvatar(QWidget *parent)

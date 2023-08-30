@@ -4,9 +4,11 @@
 #include "components_global.h"
 #include "appbar/qtcomponentsappbar.h"
 
+#include <QIcon>
 
 namespace Components {
 
+    class QtComponentsPushButton;
     class QtComponentsButtonTabsPrivate;
 
     class COMPONENTS_EXPORT QtComponentsButtonTabs : public QtComponentsAppBar
@@ -20,18 +22,38 @@ namespace Components {
         QtComponentsButtonTabs(QWidget* parent = Q_NULLPTR, Qt::Orientation orientaion = Qt::Horizontal);
         virtual~QtComponentsButtonTabs();
 
-        virtual void setCurrentIndex(int index);
-        virtual int currentIndex() const;
+        void setCurrentIndex(int index);
+        void setCurrentTab(QtComponentsPushButton* tab);
+        int currentIndex() const;
 
-        virtual Qt::Orientation orientaion()const;
+        Qt::Orientation orientaion()const;
+
+        void setAnimate(bool animate);
+        bool isAnimate()const;
+
+        bool isCheckable() const;
+        void setCheckable(bool value);
+
+        void updateTabs();
+
+        void setToolTipEdge(Qt::Edge edge);
+        Qt::Edge toolTipEdge()const;
+
+        void addTab(const QString& text, const QIcon& icon = QIcon());
+        void addTab(const QIcon& icon, const QString& tips = QString());
+        void addTab(const QString& text, const QIcon& icon, const QString& tips);
+
+        void removeTab(int index);
 
     Q_SIGNALS:
 
         void currentChanged(int);
+        void destroyChanged(int);
 
     protected:
 
-        virtual void setTabActive(int index, bool active = true) = 0;
+        virtual void addTab(QtComponentsPushButton* tab);
+        virtual void setTabActive(int index, bool active = true);
         const QScopedPointer<QtComponentsButtonTabsPrivate>         d_ptr;
 
     };

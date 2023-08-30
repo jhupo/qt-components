@@ -5,6 +5,8 @@
 
 #include <QWidget>
 
+class QHBoxLayout;
+
 namespace Components {
 
     class QtComponentsWidgetPrivate;
@@ -20,11 +22,9 @@ namespace Components {
         QtComponentsWidget(QWidget* parent = Q_NULLPTR);
         virtual~QtComponentsWidget();
 
-        void setWindowTitleBar(QWidget* title);
-        QWidget *windowTitleBar()const;
+        QHBoxLayout* appBarLayout()const;
 
     protected:
-
         virtual bool eventFilter(QObject *watched, QEvent *event);
         const QScopedPointer<QtComponentsWidgetPrivate>     d_ptr;
 

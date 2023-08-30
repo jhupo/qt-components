@@ -5,6 +5,8 @@
 
 #include <QDialog>
 
+class QHBoxLayout;
+
 namespace Components {
 
     class QtComponentsDialogPrivate;
@@ -20,8 +22,7 @@ namespace Components {
         QtComponentsDialog(QWidget* parent = Q_NULLPTR);
         virtual~QtComponentsDialog();
 
-        void setWindowTitleBar(QWidget* title);
-        QWidget *windowTitleBar()const;
+        QHBoxLayout* appBarLayout()const;
 
     protected:
 
