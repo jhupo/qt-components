@@ -5,5 +5,10 @@
         <file>icons/window/ic_minus.svg</file>
         <file>icons/navigation/ic_sidebar_button.svg</file>
         <file>icons/navigation/ic_icon.svg</file>
+        <file>icons/checkable/ic_checked_checkbox.svg</file>
+        <file>icons/checkable/ic_checked_radiobutton.svg</file>
+        <file>icons/checkable/ic_indeterminate_checkbox.svg</file>
+        <file>icons/checkable/ic_outline_checkbox.svg</file>
+        <file>icons/checkable/ic_outline_radiobutton.svg</file>
     </qresource>
 </RCC>

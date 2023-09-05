@@ -30,12 +30,15 @@ namespace Components {
         _edge = Qt::RightEdge;
         _inkBar = new QtComponentsTabsInkBar(q);
 
-        q->setColor(Qt::transparent,QPalette::Shadow);
-        q->setColor(Qt::white,QPalette::Window);
-        q->setColor(Qt::transparent,QPalette::Button);
-        q->setColor(QColor("#606266"),QPalette::ButtonText);
-        q->setColor(QColor("#F26521"),QPalette::ButtonText,QPalette::Active);
-        q->setColor(QColor("#F26521"),QPalette::Link);
+        q->setBackgroundColor(Qt::white);
+        q->setShadowBorderColor(Qt::transparent);
+        q->setLinkColor(QColor("#F26521"));
+
+        q->setIconColor(Qt::darkGray);
+        q->setIconColor(QColor("#F26521"),QPalette::Active);
+
+        q->setTextColor(QColor("#606266"));
+        q->setTextColor(QColor("#F26521"),QPalette::Active);
     }
 
     QtComponentsButtonTabs::QtComponentsButtonTabs(QWidget *parent, Qt::Orientation orientaion)
@@ -111,8 +114,10 @@ namespace Components {
         for (int i = 0; i < layout()->count(); ++i) {
            QLayoutItem *item = layout()->itemAt(i);
            if (tab = static_cast<QtComponentsPushButton *>(item->widget())) {
-               tab->setColor(color(QPalette::ButtonText));
-               tab->setColor(color(QPalette::Button));
+               tab->setTextColor(textColor());
+               tab->setIconColor(iconColor());
+               tab->setBackgroundColor(Qt::transparent);
+               tab->setShadowBorderColor(Qt::transparent);
                tab->setCheckable(d->_checkable);
                tab->setToolTipEdge(d->_edge);
            }
@@ -183,6 +188,36 @@ namespace Components {
                 delete item;
             }
         }
+    }
+
+    void QtComponentsButtonTabs::setLinkColor(const QColor &color, QPalette::ColorGroup group)
+    {
+        setColor(color,QPalette::Link,group);
+    }
+
+    QColor QtComponentsButtonTabs::linkColor(QPalette::ColorGroup group) const
+    {
+        return color(QPalette::Link,group);
+    }
+
+    void QtComponentsButtonTabs::setIconColor(const QColor &color, QPalette::ColorGroup group)
+    {
+        setColor(color,QPalette::AlternateBase,group);
+    }
+
+    QColor QtComponentsButtonTabs::iconColor(QPalette::ColorGroup group) const
+    {
+        return color(QPalette::AlternateBase,group);
+    }
+
+    void QtComponentsButtonTabs::setTextColor(const QColor &color, QPalette::ColorGroup group)
+    {
+        setColor(color,QPalette::ButtonText,group);
+    }
+
+    QColor QtComponentsButtonTabs::textColor(QPalette::ColorGroup group) const
+    {
+        return color(QPalette::ButtonText,group);
     }
 
     void QtComponentsButtonTabs::addTab(QtComponentsPushButton *tab)
@@ -273,7 +308,7 @@ namespace Components {
         painter.setRenderHint(QPainter::Antialiasing);
         painter.setOpacity(1);
         if(_tabs->isAnimate()){
-            painter.fillRect(_geometry, _tabs->color(QPalette::Link));
+            painter.fillRect(_geometry, _tabs->linkColor());
         }
     }
 

@@ -28,13 +28,19 @@ namespace Components {
 
         qreal roundedRadius()const;
 
+        void setShadowBorderColor(const QColor& color, QPalette::ColorGroup group = QPalette::NColorGroups);
+        QColor shadowBorderColor(QPalette::ColorGroup group = QPalette::Inactive)const;
+
+        void setBackgroundColor(const QColor& color, QPalette::ColorGroup group = QPalette::NColorGroups);
+        QColor backgroundColor(QPalette::ColorGroup group = QPalette::Inactive)const;
+
+    protected:
+
         virtual void setColor(const QColor& color,
                               QPalette::ColorRole role = QPalette::Window,
                               QPalette::ColorGroup group = QPalette::NColorGroups);
 
-        virtual QColor color(QPalette::ColorRole role = QPalette::Window)const;
-
-    protected:
+        virtual QColor color(QPalette::ColorRole role = QPalette::Window, QPalette::ColorGroup group = QPalette::NColorGroups)const;
         Qt::Orientation orientaion()const;
         const QScopedPointer<QtComponentsAppBarPrivate>         d_ptr;
         virtual bool event(QEvent *event);

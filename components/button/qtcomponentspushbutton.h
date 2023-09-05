@@ -31,11 +31,17 @@ namespace Components {
 
         qreal roundedRadius()const;
 
-        virtual void setColor(const QColor& color,
-                              QPalette::ColorRole role = QPalette::Button,
-                              QPalette::ColorGroup group = QPalette::NColorGroups);
+        void setIconColor(const QColor& color, QPalette::ColorGroup group = QPalette::NColorGroups);
+        QColor iconColor(QPalette::ColorGroup group = QPalette::NColorGroups)const;
 
-        virtual QColor color(QPalette::ColorRole role = QPalette::Button)const;
+        void setShadowBorderColor(const QColor& color, QPalette::ColorGroup group = QPalette::NColorGroups);
+        QColor shadowBorderColor(QPalette::ColorGroup group = QPalette::NColorGroups)const;
+
+        void setBackgroundColor(const QColor& color, QPalette::ColorGroup group = QPalette::NColorGroups);
+        QColor backgroundColor(QPalette::ColorGroup group = QPalette::NColorGroups)const;
+
+        void setTextColor(const QColor& color, QPalette::ColorGroup group = QPalette::NColorGroups);
+        QColor textColor(QPalette::ColorGroup group = QPalette::NColorGroups);
 
         virtual void setUserData(const QVariant& data);
         virtual QVariant userData()const;
@@ -61,6 +67,11 @@ namespace Components {
 
     protected:
         enum{IconPadding = 6};
+        virtual void setColor(const QColor& color,
+                              QPalette::ColorRole role = QPalette::Button,
+                              QPalette::ColorGroup group = QPalette::NColorGroups);
+
+        virtual QColor color(QPalette::ColorRole role = QPalette::Button, QPalette::ColorGroup group = QPalette::NColorGroups)const;
         virtual bool event(QEvent *event);
         virtual void paintEvent(QPaintEvent *);
         virtual void paintBackground(QPainter *painter);

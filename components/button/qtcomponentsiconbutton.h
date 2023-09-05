@@ -20,6 +20,9 @@ namespace Components {
         void setDotDisabled(bool disable);
         bool isDotDisabled()const;
 
+        void setDotColor(const QColor& color);
+        QColor dotColor()const;
+
     protected:
 
         virtual void paintEvent(QPaintEvent *);

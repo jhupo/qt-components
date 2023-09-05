@@ -100,6 +100,26 @@ namespace Components {
         return d->_radius;
     }
 
+    void QtComponentsAppBar::setShadowBorderColor(const QColor &color, QPalette::ColorGroup group)
+    {
+        setColor(color,QPalette::Shadow,group);
+    }
+
+    QColor QtComponentsAppBar::shadowBorderColor(QPalette::ColorGroup group) const
+    {
+        return color(QPalette::Shadow,group);
+    }
+
+    void QtComponentsAppBar::setBackgroundColor(const QColor &color, QPalette::ColorGroup group)
+    {
+        setColor(color,QPalette::Window,group);
+    }
+
+    QColor QtComponentsAppBar::backgroundColor(QPalette::ColorGroup group) const
+    {
+        return color(QPalette::Window,group);
+    }
+
     void QtComponentsAppBar::setColor(const QColor &color, QPalette::ColorRole role, QPalette::ColorGroup group)
     {
         QPalette pale = palette();
@@ -113,8 +133,11 @@ namespace Components {
         setPalette(pale);
     }
 
-    QColor QtComponentsAppBar::color(QPalette::ColorRole role) const
+    QColor QtComponentsAppBar::color(QPalette::ColorRole role, QPalette::ColorGroup group) const
     {
+        if(QPalette::NColorGroups != group){
+            return palette().color(role);
+        }
         return palette().color(!isEnabled() ?
                 QPalette::Disabled : underMouse() ?
                                        QPalette::Active : QPalette::Inactive,role);

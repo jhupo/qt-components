@@ -97,6 +97,46 @@ namespace Components {
         return QtComponentsTheme::radiusRatios(d->_ratios,rect());
     }
 
+    void QtComponentsPushButton::setIconColor(const QColor &color, QPalette::ColorGroup group)
+    {
+        setColor(color,QPalette::AlternateBase,group);
+    }
+
+    QColor QtComponentsPushButton::iconColor(QPalette::ColorGroup group) const
+    {
+        return color(QPalette::AlternateBase,group);
+    }
+
+    void QtComponentsPushButton::setShadowBorderColor(const QColor &color, QPalette::ColorGroup group)
+    {
+        setColor(color,QPalette::Shadow,group);
+    }
+
+    QColor QtComponentsPushButton::shadowBorderColor(QPalette::ColorGroup group) const
+    {
+        return color(QPalette::Shadow,group);
+    }
+
+    void QtComponentsPushButton::setBackgroundColor(const QColor &color, QPalette::ColorGroup group)
+    {
+        setColor(color,QPalette::Button,group);
+    }
+
+    QColor QtComponentsPushButton::backgroundColor(QPalette::ColorGroup group) const
+    {
+        return color(QPalette::Button,group);
+    }
+
+    void QtComponentsPushButton::setTextColor(const QColor &color, QPalette::ColorGroup group)
+    {
+        setColor(color,QPalette::ButtonText,group);
+    }
+
+    QColor QtComponentsPushButton::textColor(QPalette::ColorGroup group)
+    {
+        return color(QPalette::ButtonText,group);
+    }
+
     void QtComponentsPushButton::setColor(const QColor &color, QPalette::ColorRole role, QPalette::ColorGroup group)
     {
         QPalette pale = palette();
@@ -110,8 +150,11 @@ namespace Components {
         setPalette(pale);
     }
 
-    QColor QtComponentsPushButton::color(QPalette::ColorRole role) const
+    QColor QtComponentsPushButton::color(QPalette::ColorRole role, QPalette::ColorGroup group) const
     {
+        if(QPalette::NColorGroups != group){
+            return palette().color(group,role);
+        }
         return palette().color(!isEnabled() ?
                 QPalette::Disabled : underMouse() || isChecked() ?
                 QPalette::Active : QPalette::Inactive,role);
@@ -235,8 +278,8 @@ namespace Components {
 
     void QtComponentsPushButton::paintBackground(QPainter *painter)
     {
-        painter->setPen(color(QPalette::Shadow));
-        painter->setBrush(color(QPalette::Button));
+        painter->setPen(shadowBorderColor());
+        painter->setBrush(backgroundColor());
         painter->drawRoundedRect(rect(),roundedRadius(),roundedRadius());
     }
 
@@ -245,7 +288,7 @@ namespace Components {
         Q_D(QtComponentsPushButton);
 
         painter->setFont(font());
-        painter->setPen(color(QPalette::ButtonText));
+        painter->setPen(textColor());
         painter->setBrush(Qt::NoBrush);
 
         if(icon().isNull()){
@@ -277,7 +320,7 @@ namespace Components {
         QPixmap pixmap = icon().pixmap(iconSize());
 
         if(useThemeColors()){
-            pixmap = QtComponentsTheme::icon2Color(icon().pixmap(iconSize()),color(QPalette::ButtonText));
+            pixmap = QtComponentsTheme::icon2Color(icon().pixmap(iconSize()),iconColor());
         }
 
         painter->drawPixmap(iconGeometry, pixmap);

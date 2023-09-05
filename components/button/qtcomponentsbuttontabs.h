@@ -45,6 +45,15 @@ namespace Components {
 
         void removeTab(int index);
 
+        void setLinkColor(const QColor& color, QPalette::ColorGroup group = QPalette::NColorGroups);
+        QColor linkColor(QPalette::ColorGroup group = QPalette::NColorGroups)const;
+
+        void setIconColor(const QColor& color, QPalette::ColorGroup group = QPalette::NColorGroups);
+        QColor iconColor(QPalette::ColorGroup group = QPalette::NColorGroups)const;
+
+        void setTextColor(const QColor& color, QPalette::ColorGroup group = QPalette::NColorGroups);
+        QColor textColor(QPalette::ColorGroup group = QPalette::NColorGroups)const;
+
     Q_SIGNALS:
 
         void currentChanged(int);
