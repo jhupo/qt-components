@@ -13,6 +13,8 @@
 #  define COMPONENTS_EXPORT Q_DECL_IMPORT
 #endif
 #if (QT_VERSION < 0x050500)
+#undef qInfo
+#define qInfo qCritical
 #undef qCInfo
 #define qCInfo qCCritical
 #endif

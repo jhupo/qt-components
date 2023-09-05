@@ -158,7 +158,6 @@ namespace Components {
                 d->_window->installEventFilter(this);
             }
         }
-
         parent->setAttribute(Qt::WA_MouseTracking);
         parent->installEventFilter(this);
         setObjectName("QtComponentsWindowHelper");

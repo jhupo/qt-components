@@ -21,6 +21,7 @@ namespace Components {
 
         QtComponentsAppBar*const                q_ptr;
         qreal                                   _ratios;
+        qreal                                   _radius;
         Qt::Orientation                         _orientation;
     };
 
@@ -39,6 +40,8 @@ namespace Components {
     void QtComponentsAppBarPrivate::init()
     {
         Q_Q(QtComponentsAppBar);
+
+        _radius = 0;
 
         q->setRoundedRadiusRatios(15);
 
@@ -81,10 +84,20 @@ namespace Components {
         return d->_ratios;
     }
 
+    void QtComponentsAppBar::setRoundedRadius(const qreal radius)
+    {
+        Q_D(QtComponentsAppBar);
+        d->_radius = radius;
+        update();
+    }
+
     qreal QtComponentsAppBar::roundedRadius() const
     {
         Q_D(const QtComponentsAppBar);
-        return QtComponentsTheme::radiusRatios(d->_ratios,rect());
+        if(qFuzzyIsNull(d->_radius)){
+            return QtComponentsTheme::radiusRatios(d->_ratios,rect());
+        }
+        return d->_radius;
     }
 
     void QtComponentsAppBar::setColor(const QColor &color, QPalette::ColorRole role, QPalette::ColorGroup group)

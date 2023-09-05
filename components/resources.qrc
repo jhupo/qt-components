@@ -3,5 +3,7 @@
         <file>icons/window/ic_close.svg</file>
         <file>icons/window/ic_menu.svg</file>
         <file>icons/window/ic_minus.svg</file>
+        <file>icons/navigation/ic_sidebar_button.svg</file>
+        <file>icons/navigation/ic_icon.svg</file>
     </qresource>
 </RCC>

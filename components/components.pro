@@ -1,6 +1,7 @@
 include($$top_srcdir/library.pri)
 QT                      +=              core widgets gui svg
 CONFIG                  +=              shared
+CONFIG                  +=              unversioned_libname unversioned_soname
 TEMPLATE                 =              lib
 DESTDIR                  =              $$top_builddir/bin
 MOC_DIR                 +=              $$top_builddir/components/moc

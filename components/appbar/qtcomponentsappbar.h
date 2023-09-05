@@ -14,6 +14,7 @@ namespace Components {
         Q_OBJECT
         Q_DISABLE_COPY(QtComponentsAppBar)
         Q_DECLARE_PRIVATE(QtComponentsAppBar)
+        Q_PROPERTY(qreal roundedRadiusRatios READ roundedRadiusRatios WRITE setRoundedRadiusRatios)
 
     public:
 
@@ -22,6 +23,8 @@ namespace Components {
 
         void setRoundedRadiusRatios(const qreal ratios);
         qreal roundedRadiusRatios()const;
+
+        void setRoundedRadius(const qreal radius);
 
         qreal roundedRadius()const;
 

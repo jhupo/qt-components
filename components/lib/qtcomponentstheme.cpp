@@ -126,11 +126,17 @@ namespace Components {
         return QFont(family,pointSize,weight,italic);
     }
 
-    QIcon QtComponentsTheme::icon(const QString &category, const QString &icon, QString &state)
+    QIcon QtComponentsTheme::icon(const QString &category, const QString &icon)
     {
-        if(!state.isEmpty())
-            state.insert(0,"_");
-        QFile file(QString(":/icons/icons/%1/ic_%2%3.svg").arg(category).arg(icon).arg(state));
+        return QtComponentsTheme::icon(category,icon,QString());
+    }
+
+    QIcon QtComponentsTheme::icon(const QString &category, const QString &icon, const QString &state)
+    {
+        QString s = state;
+        if(!s.isEmpty())
+            s.insert(0,"_");
+        QFile file(QString(":/icons/icons/%1/ic_%2%3.svg").arg(category).arg(icon).arg(s));
         if(!file.open(QFile::ReadOnly))
             return QIcon();
         QIcon image = QtComponentsTheme::icon(file.readAll());
@@ -176,6 +182,17 @@ namespace Components {
     qreal QtComponentsTheme::radiusRatios(const qreal percentage, const QRect &rect)
     {
         return qMin(rect.width(),rect.height()) * percentage / 100.;
+    }
+
+    void QtComponentsTheme::setPaletteColor(const QColor &color, QPalette &palette, QPalette::ColorRole role, QPalette::ColorGroup group)
+    {
+        if(QPalette::NColorGroups != group){
+            palette.setColor(group,role,color);
+        }else{
+            palette.setColor(QPalette::Disabled,role,color);
+            palette.setColor(QPalette::Inactive,role,color);
+            palette.setColor(QPalette::Active,role,color);
+        }
     }
 
 

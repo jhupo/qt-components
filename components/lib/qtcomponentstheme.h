@@ -5,6 +5,8 @@
 
 #include "constants.h"
 
+#include <QPalette>
+
 namespace Components {
 
     class QtComponentsThemePrivate;
@@ -31,7 +33,9 @@ namespace Components {
 
         static QFont font(const QString& family, int pointSize = -1, int weight = -1, bool italic = false);
 
-        static QIcon icon(const QString& category, const QString& icon, QString& state = QString());
+        static QIcon icon(const QString& category, const QString& icon);
+
+        static QIcon icon(const QString& category, const QString& icon, const QString& state);
 
         static QIcon icon(const QString& details);
 
@@ -42,6 +46,10 @@ namespace Components {
         static QString elidedText(const QString& text,QWidget* widget,const quint16& margin = 9, Qt::TextElideMode mode = Qt::ElideMiddle);
 
         static qreal radiusRatios(const qreal percentage, const QRect& rect);
+
+        static void setPaletteColor(const QColor& color, QPalette& palette,
+                                    QPalette::ColorRole role = QPalette::Window,
+                                    QPalette::ColorGroup group = QPalette::NColorGroups);
 
     protected:
 
