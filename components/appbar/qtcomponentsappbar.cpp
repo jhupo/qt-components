@@ -166,14 +166,12 @@ namespace Components {
 
     void QtComponentsAppBar::paintEvent(QPaintEvent *)
     {
-        Q_D(QtComponentsAppBar);
-
         QPainter painter(this);
         painter.setRenderHint(QPainter::Antialiasing);
         painter.fillRect(rect(),Qt::transparent);
 
-        painter.setPen(color(QPalette::Shadow));
-        painter.setBrush(color());
+        painter.setPen(shadowBorderColor());
+        painter.setBrush(backgroundColor());
 
         painter.drawRoundedRect(rect(),roundedRadius(),roundedRadius());
 
