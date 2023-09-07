@@ -6,6 +6,7 @@
 #include "lib/qtcomponentsoverlaywidget.h"
 #include "qtcomponentspushbutton.h"
 
+class QMutex;
 class QPropertyAnimation;
 
 namespace Components{
@@ -26,11 +27,15 @@ namespace Components{
         void init();
 
         QtComponentsButtonTabs*const            q_ptr;
+        bool                                    _autoSort;
         int                                     _index;
+        int                                     _iconSize;
         bool                                    _animate;
         bool                                    _checkable;
         Qt::Edge                                _edge;
+        QPalette                                _tabPalette;
         QtComponentsTabsInkBar*                 _inkBar;
+        QMutex                                  _mutex;
     };
 
     class QtComponentsTabsInkBar : public QtComponentsOverlayWidget

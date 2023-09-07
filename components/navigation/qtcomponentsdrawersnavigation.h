@@ -49,7 +49,7 @@ namespace Components {
 
         void sort();
         void setAutoSort(bool sort);
-        bool autoSort()const;
+        bool autoSort() const;
 
     Q_SIGNALS:
 

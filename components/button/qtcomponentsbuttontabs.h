@@ -34,16 +34,25 @@ namespace Components {
         bool isCheckable() const;
         void setCheckable(bool value);
 
-        void updateTabs();
+        void setTabIconSize(int size);
+        int tabIconSize()const;
+
+        void addTab(const QString& text, const QIcon& icon = QIcon(), const QString& tips = QString());
+        void addTab(const QIcon& icon, const QString& text, const QString& tips);
+
+        void insertTab(const int index, const QString& text, const QIcon& icon, const QString& tips);
+
+        void removeTab(const int index);
+        void eraseTab(const int index);
+
+        int findTabsByUserId(int index);
+
+        void sort();
+        void setAutoSort(bool sort);
+        bool autoSort()const;
 
         void setToolTipEdge(Qt::Edge edge);
         Qt::Edge toolTipEdge()const;
-
-        void addTab(const QString& text, const QIcon& icon = QIcon());
-        void addTab(const QIcon& icon, const QString& tips = QString());
-        void addTab(const QString& text, const QIcon& icon, const QString& tips);
-
-        void removeTab(int index);
 
         void setLinkColor(const QColor& color, QPalette::ColorGroup group = QPalette::NColorGroups);
         QColor linkColor(QPalette::ColorGroup group = QPalette::NColorGroups)const;
@@ -57,11 +66,9 @@ namespace Components {
     Q_SIGNALS:
 
         void currentChanged(int);
-        void destroyChanged(int);
 
     protected:
 
-        virtual void addTab(QtComponentsPushButton* tab);
         virtual void setTabActive(int index, bool active = true);
         const QScopedPointer<QtComponentsButtonTabsPrivate>         d_ptr;
 

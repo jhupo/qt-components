@@ -197,10 +197,13 @@ namespace Components {
             delete w;
         }
 
-        if(layout()->count()){
-            if(QtComponentsDrawersTab* tab = qobject_cast<QtComponentsDrawersTab*>(layout()->itemAt(0)->widget())){
+        if(d->_sidebarWidget->layout()->count() - 1){
+            if(QtComponentsDrawersTab* tab = qobject_cast<QtComponentsDrawersTab*>(d->_sidebarWidget->layout()->itemAt(0)->widget())){
+                locker.unlock();
                 setCurrentDrawersTab(tab);
             }
+        }else{
+            d->_index = -1;
         }
     }
 
@@ -216,6 +219,15 @@ namespace Components {
 
         if(QWidget* w = d->_stackedWidget->widget(index)){
             d->_stackedWidget->removeWidget(w);
+        }
+
+        if(d->_sidebarWidget->layout()->count() - 1){
+            if(QtComponentsDrawersTab* tab = qobject_cast<QtComponentsDrawersTab*>(d->_sidebarWidget->layout()->itemAt(0)->widget())){
+                locker.unlock();
+                setCurrentDrawersTab(tab);
+            }
+        }else{
+            d->_index = -1;
         }
     }
 
@@ -242,10 +254,6 @@ namespace Components {
     void QtComponentsDrawersNavigation::setCurrentDrawersTab(QtComponentsDrawersTab *tab)
     {
         Q_D(QtComponentsDrawersNavigation);
-
-        QMutexLocker locker(&d->_mutex);
-
-        locker.unlock();
 
         setCurrentDrawersTab(d->_sidebarWidget->layout()->indexOf(tab));
     }
@@ -319,8 +327,10 @@ namespace Components {
     void QtComponentsDrawersNavigation::setAutoSort(bool sort)
     {
         Q_D(QtComponentsDrawersNavigation);
+        QMutexLocker locker(&d->_mutex);
         d->_autoSort = sort;
         if(sort){
+            locker.unlock();
             QtComponentsDrawersNavigation::sort();
         }
     }

@@ -1,6 +1,7 @@
 #include "qtcomponentsbuttontabs.h"
 #include "qtcomponentsbuttontabs_p.h"
 #include "qtcomponentspushbutton.h"
+#include "lib/qtcomponentstheme.h"
 
 #include <QEvent>
 #include <QPainter>
@@ -25,6 +26,8 @@ namespace Components {
         Q_Q(QtComponentsButtonTabs);
 
         _index = -1;
+        _autoSort = true;
+        _iconSize = 16;
         _animate = true;
         _checkable = true;
         _edge = Qt::RightEdge;
@@ -32,6 +35,7 @@ namespace Components {
 
         q->setBackgroundColor(Qt::white);
         q->setShadowBorderColor(Qt::transparent);
+
         q->setLinkColor(QColor("#F26521"));
 
         q->setIconColor(Qt::darkGray);
@@ -39,6 +43,7 @@ namespace Components {
 
         q->setTextColor(QColor("#606266"));
         q->setTextColor(QColor("#F26521"),QPalette::Active);
+
     }
 
     QtComponentsButtonTabs::QtComponentsButtonTabs(QWidget *parent, Qt::Orientation orientaion)
@@ -56,6 +61,7 @@ namespace Components {
     void QtComponentsButtonTabs::setCurrentIndex(int index)
     {
         Q_D(QtComponentsButtonTabs);
+        QMutexLocker locker(&d->_mutex);
         setTabActive(d->_index,false);
         d->_index = index;
         setTabActive(index,true);
@@ -84,6 +90,7 @@ namespace Components {
     void QtComponentsButtonTabs::setAnimate(bool animate)
     {
         Q_D(QtComponentsButtonTabs);
+        QMutexLocker locker(&d->_mutex);
         d->_animate = animate;
         update();
     }
@@ -104,90 +111,177 @@ namespace Components {
     {
         Q_D(QtComponentsButtonTabs);
         d->_checkable = value;
-        updateTabs();
     }
 
-    void QtComponentsButtonTabs::updateTabs()
+    void QtComponentsButtonTabs::setTabIconSize(int size)
     {
         Q_D(QtComponentsButtonTabs);
-        QtComponentsPushButton *tab;
-        for (int i = 0; i < layout()->count(); ++i) {
-           QLayoutItem *item = layout()->itemAt(i);
-           if (tab = static_cast<QtComponentsPushButton *>(item->widget())) {
-               tab->setTextColor(textColor());
-               tab->setIconColor(iconColor());
-               tab->setBackgroundColor(Qt::transparent);
-               tab->setShadowBorderColor(Qt::transparent);
-               tab->setCheckable(d->_checkable);
-               tab->setToolTipEdge(d->_edge);
-           }
+        d->_iconSize = size;
+    }
+
+    int QtComponentsButtonTabs::tabIconSize() const
+    {
+        Q_D(const QtComponentsButtonTabs);
+        return d->_iconSize;
+    }
+
+    void QtComponentsButtonTabs::addTab(const QString &text, const QIcon &icon, const QString &tips)
+    {
+        insertTab(layout()->count(),text,icon,tips);
+    }
+
+    void QtComponentsButtonTabs::addTab(const QIcon &icon, const QString &text, const QString &tips)
+    {
+        insertTab(layout()->count(),text,icon,tips);
+    }
+
+    void QtComponentsButtonTabs::insertTab(const int index, const QString &text, const QIcon &icon, const QString &tips)
+    {
+        Q_D(QtComponentsButtonTabs);
+        QMutexLocker locker(&d->_mutex);
+        QtComponentsButtonTab* tab = new QtComponentsButtonTab(this);
+        tab->setBackgroundColor(Qt::transparent);
+        tab->setShadowBorderColor(Qt::transparent);
+        tab->setTextColor(textColor(QPalette::Inactive),QPalette::Inactive);
+        tab->setTextColor(textColor(QPalette::Active),QPalette::Active);
+        tab->setUserData(index);
+        if(!icon.isNull()){
+            tab->setIconSize(QSize(d->_iconSize,d->_iconSize));
+            tab->setIconColor(iconColor(QPalette::Inactive),QPalette::Inactive);
+            tab->setIconColor(iconColor(QPalette::Active),QPalette::Active);
         }
+        tab->setText(text);
+        tab->setToolTip(tips);
+        tab->setToolTipEdge(d->_edge);
+        tab->setCheckable(d->_checkable);
+
+        layout()->addWidget(tab);
+
+        if(-1 == d->_index){
+            locker.unlock();
+            setCurrentIndex(0);
+        }
+
+        if(d->_autoSort){
+            locker.unlock();
+            sort();
+        }
+    }
+
+    void QtComponentsButtonTabs::removeTab(const int index)
+    {
+        Q_D(QtComponentsButtonTabs);
+        QMutexLocker locker(&d->_mutex);
+
+        if(QLayoutItem* item = layout()->takeAt(index)){
+            delete item;
+        }
+
+        if(layout()->count()){
+            if(QtComponentsButtonTab* tab = qobject_cast<QtComponentsButtonTab*>(layout()->itemAt(0)->widget())){
+                locker.unlock();
+                setCurrentTab(tab);
+            }
+        }else{
+            d->_index = -1;
+        }
+
+    }
+
+    void QtComponentsButtonTabs::eraseTab(const int index)
+    {
+        Q_D(QtComponentsButtonTabs);
+        QMutexLocker locker(&d->_mutex);
+
+        if(QLayoutItem* item = layout()->takeAt(index)){
+            if(QWidget* w = item->widget()){
+                delete w;
+            }
+            delete item;
+        }
+
+        if(layout()->count()){
+            if(QtComponentsButtonTab* tab = qobject_cast<QtComponentsButtonTab*>(layout()->itemAt(0)->widget())){
+                locker.unlock();
+                setCurrentTab(tab);
+            }
+        }else{
+            d->_index = -1;
+        }
+    }
+
+    int QtComponentsButtonTabs::findTabsByUserId(int index)
+    {
+        Q_D(QtComponentsButtonTabs);
+        QMutexLocker locker(&d->_mutex);
+        int count = -1;
+        QtComponentsButtonTab* tab = Q_NULLPTR;
+        while (QLayoutItem* item = layout()->itemAt(++count)) {
+             if(tab = qobject_cast<QtComponentsButtonTab*>(item->widget())){
+                 if(index == tab->userData().toInt()){
+                     return tab->userData().toInt();
+                 }
+             }
+        }
+        return -1;
+    }
+
+    void QtComponentsButtonTabs::sort()
+    {
+        Q_D(QtComponentsButtonTabs);
+        QMutexLocker locker(&d->_mutex);
+
+        QMap<int,QtComponentsButtonTab* > maps;
+
+        while(QLayoutItem* item = layout()->itemAt(0)){
+            if(QtComponentsButtonTab* tab = qobject_cast<QtComponentsButtonTab*>(item->widget())){
+                int index = layout()->indexOf(tab);
+                if(-1 != index){
+                    maps.insert(tab->userData().toInt(),tab);
+                }
+            }
+            layout()->takeAt(0);
+        }
+
+        foreach(int key, maps.keys()){
+            QtComponentsButtonTab* tab = maps.value(key);
+            if(tab){
+                layout()->addWidget(tab);
+            }
+        }
+
+        locker.unlock();
+
+        setCurrentIndex(0);
+    }
+
+    void QtComponentsButtonTabs::setAutoSort(bool sort)
+    {
+        Q_D(QtComponentsButtonTabs);
+        QMutexLocker locker(&d->_mutex);
+        d->_autoSort = sort;
+        if(sort){
+            locker.unlock();
+            QtComponentsButtonTabs::sort();
+        }
+    }
+
+    bool QtComponentsButtonTabs::autoSort() const
+    {
+        Q_D(const QtComponentsButtonTabs);
+        return d->_autoSort;
     }
 
     void QtComponentsButtonTabs::setToolTipEdge(Qt::Edge edge)
     {
         Q_D(QtComponentsButtonTabs);
         d->_edge = edge;
-        updateTabs();
     }
 
     Qt::Edge QtComponentsButtonTabs::toolTipEdge() const
     {
         Q_D(const QtComponentsButtonTabs);
         return d->_edge;
-    }
-
-    void QtComponentsButtonTabs::addTab(const QString &text, const QIcon &icon)
-    {
-        QtComponentsButtonTab* tab = new QtComponentsButtonTab(this);
-        tab->setPalette(palette());
-        tab->setFont(font());
-        if(!icon.isNull()){
-            tab->setIcon(icon);
-            tab->setIconSize(QSize(16,16));
-        }
-        tab->setText(text);
-        addTab(tab);
-    }
-
-    void QtComponentsButtonTabs::addTab(const QIcon &icon, const QString &tips)
-    {
-        Q_D(QtComponentsButtonTabs);
-        QtComponentsButtonTab* tab = new QtComponentsButtonTab(this);
-        tab->setPalette(palette());
-        tab->setFont(font());
-        tab->setIcon(icon);
-        tab->setIconSize(QSize(16,16));
-        tab->setToolTip(tips);
-        tab->setToolTipEdge(d->_edge);
-        addTab(tab);
-    }
-
-    void QtComponentsButtonTabs::addTab(const QString &text, const QIcon &icon, const QString &tips)
-    {
-        Q_D(QtComponentsButtonTabs);
-        QtComponentsButtonTab* tab = new QtComponentsButtonTab(this);
-        tab->setPalette(palette());
-        tab->setFont(font());
-        tab->setIcon(icon);
-        tab->setIconSize(QSize(16,16));
-        tab->setText(text);
-        tab->setToolTip(tips);
-        tab->setToolTipEdge(d->_edge);
-        addTab(tab);
-    }
-
-    void QtComponentsButtonTabs::removeTab(int index)
-    {
-        if(-1 != index && index < layout()->count()){
-            if(QLayoutItem* item = layout()->takeAt(index)){
-                if(QWidget* w = item->widget()){
-                    delete w;
-                    emit destroyChanged(index);
-                }
-                delete item;
-            }
-        }
     }
 
     void QtComponentsButtonTabs::setLinkColor(const QColor &color, QPalette::ColorGroup group)
@@ -202,35 +296,26 @@ namespace Components {
 
     void QtComponentsButtonTabs::setIconColor(const QColor &color, QPalette::ColorGroup group)
     {
-        setColor(color,QPalette::AlternateBase,group);
+        Q_D(QtComponentsButtonTabs);
+        QtComponentsTheme::setPaletteColor(color,d->_tabPalette,QPalette::AlternateBase,group);
     }
 
     QColor QtComponentsButtonTabs::iconColor(QPalette::ColorGroup group) const
     {
-        return color(QPalette::AlternateBase,group);
+        Q_D(const QtComponentsButtonTabs);
+        return d->_tabPalette.color(group,QPalette::AlternateBase);
     }
 
     void QtComponentsButtonTabs::setTextColor(const QColor &color, QPalette::ColorGroup group)
     {
-        setColor(color,QPalette::ButtonText,group);
+        Q_D(QtComponentsButtonTabs);
+        QtComponentsTheme::setPaletteColor(color,d->_tabPalette,QPalette::ButtonText,group);
     }
 
     QColor QtComponentsButtonTabs::textColor(QPalette::ColorGroup group) const
     {
-        return color(QPalette::ButtonText,group);
-    }
-
-    void QtComponentsButtonTabs::addTab(QtComponentsPushButton *tab)
-    {
-        Q_D(QtComponentsButtonTabs);
-        layout()->addWidget(tab);
-        if(-1 == d->_index){
-            d->_index = 0;
-            setTabActive(d->_index,true);
-            if(d->_animate){
-                d->_inkBar->refreshGeometry();
-            }
-        }
+        Q_D(const QtComponentsButtonTabs);
+        return d->_tabPalette.color(group,QPalette::ButtonText);
     }
 
     void QtComponentsButtonTabs::setTabActive(int index, bool active)
@@ -332,8 +417,8 @@ namespace Components {
         : QtComponentsPushButton(parent)
         , _parent(parent)
     {
+        setChecked(false);
         setAutoExclusive(true);
-        setCheckable(parent->isCheckable());
         connect(this,SIGNAL(clicked()),SLOT(activateTab()));
     }
 
