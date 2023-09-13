@@ -6,6 +6,7 @@
 #include "lib/qtcomponentstheme.h"
 
 #include <QEvent>
+#include <QPainter>
 #include <QWidget>
 #include <QHBoxLayout>
 #include <QApplication>
@@ -43,8 +44,9 @@ namespace Components {
     void QtComponentsDialogPrivate::init()
     {
         Q_Q(QtComponentsDialog);
-#ifdef DWM_AVAILABLE
         q->setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
+#ifdef DWM_AVAILABLE
+        registerNativeEventFilter(q->winId());
         extendFrameIntoStyle(q);
         extendFrameIntoClientArea(q,1,1,1,1);
 #endif
@@ -60,7 +62,7 @@ namespace Components {
         QObject::connect(q,SIGNAL(windowIconChanged(QIcon)),icon,SLOT(setIcon(QIcon)));
 
         Components::QtComponentsLabel* title = new Components::QtComponentsLabel(_titleBar);
-        title->setFont(Components::QtComponentsTheme::inst()->font(16,QFont::Medium));
+        title->setFont(Components::QtComponentsTheme::inst()->font(14,QFont::Medium));
         QObject::connect(q,SIGNAL(windowTitleChanged(QString)),title,SLOT(setText(QString)));
 
         Components::QtComponentsIconButton* close = new Components::QtComponentsIconButton(_titleBar);
@@ -102,6 +104,18 @@ namespace Components {
     {
         Q_D(const QtComponentsDialog);
         return qobject_cast<QHBoxLayout*>(d->_titleBar->layout());
+    }
+
+    void QtComponentsDialog::paintEvent(QPaintEvent * event)
+    {
+        QDialog::paintEvent(event);
+#ifndef DWM_AVAILABLE
+        QPainter painter(this);
+        painter.setRenderHint(QPainter::Antialiasing);
+        painter.setPen(palette().color(QPalette::Shadow));
+        painter.setBrush(palette().color(QPalette::Window));
+        painter.drawRect(rect());
+#endif
     }
 
     bool QtComponentsDialog::eventFilter(QObject *watched, QEvent *event)

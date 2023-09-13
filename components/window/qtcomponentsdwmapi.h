@@ -5,6 +5,7 @@
 
 #include <QObject>
 #include <QWidget>
+#include <QList>
 #include <QCoreApplication>
 #include <QAbstractNativeEventFilter>
 
@@ -39,6 +40,16 @@ inline COMPONENTS_EXPORT void extendFrameIntoStyle(QWidget* window){
     DWORD style = GetWindowLong(hwnd, GWL_STYLE);
     SetWindowLong(hwnd,GWL_STYLE,style|WS_CAPTION);
 }
+static QList<WId> regs;
+inline COMPONENTS_EXPORT void registerNativeEventFilter(WId id){
+    if(!regs.contains(id)){
+        regs.push_back(id);
+    }
+}
+inline COMPONENTS_EXPORT bool isRegisterNativeEventFilter(WId id){
+    return regs.contains(id);
+}
+
 class COMPONENTS_EXPORT QtDwmapiNativeEventFilter : public QAbstractNativeEventFilter{
 public:
     QtDwmapiNativeEventFilter(){
@@ -47,11 +58,13 @@ public:
     virtual ~QtDwmapiNativeEventFilter(){
         QCoreApplication::instance()->removeNativeEventFilter(this);
     }
-
     virtual bool nativeEventFilter(const QByteArray &eventType, void *message, long *result){
         Q_UNUSED(eventType);
         MSG* msg = reinterpret_cast<MSG*>(message);
         if(WM_NCCALCSIZE == msg->message){
+            if(!isRegisterNativeEventFilter(reinterpret_cast<WId>(msg->hwnd))){
+                return false;
+            }
             *result = 0;
             return true;
         }

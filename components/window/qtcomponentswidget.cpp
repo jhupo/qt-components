@@ -6,6 +6,7 @@
 #include "lib/qtcomponentstheme.h"
 
 #include <QEvent>
+#include <QPainter>
 #include <QWidget>
 #include <QHBoxLayout>
 #include <QApplication>
@@ -46,6 +47,18 @@ namespace Components{
         return qobject_cast<QHBoxLayout*>(d->_titleBar->layout());
     }
 
+    void QtComponentsWidget::paintEvent(QPaintEvent *event)
+    {
+        QWidget::paintEvent(event);
+#ifndef DWM_AVAILABLE
+        QPainter painter(this);
+        painter.setRenderHint(QPainter::Antialiasing);
+        painter.setPen(palette().color(QPalette::Shadow));
+        painter.setBrush(palette().color(QPalette::Window));
+        painter.drawRect(rect());
+#endif
+    }
+
     bool QtComponentsWidget::eventFilter(QObject *watched, QEvent *event)
     {
         Q_D(QtComponentsWidget);
@@ -82,8 +95,9 @@ namespace Components{
     void QtComponentsWidgetPrivate::init()
     {
         Q_Q(QtComponentsWidget);
-#ifdef DWM_AVAILABLE
         q->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
+#ifdef DWM_AVAILABLE
+        registerNativeEventFilter(q->winId());
         extendFrameIntoStyle(q);
         extendFrameIntoClientArea(q,1,1,1,1);
 #endif

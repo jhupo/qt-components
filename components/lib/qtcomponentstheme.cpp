@@ -72,10 +72,11 @@ namespace Components {
             QColor("#eb2f96"), QColor("#c41d7f"), QColor("#9e1068"), QColor("#780650"), QColor("#520339"),
             QColor("#ffffff"), QColor("#fafafa"), QColor("#f5f5f5"), QColor("#f0f0f0"), QColor("#d9d9d9"),
             QColor("#bfbfbf"), QColor("#8c8c8c"), QColor("#595959"), QColor("#434343"), QColor("#262626"),
-            QColor("#1f1f1f"), QColor("#141414"), QColor("#000000")
+            QColor("#1f1f1f"), QColor("#141414"), QColor("#000000"), QColor("#67C23A"), QColor("#E6A23C"),
+            QColor("#F56C6C"), QColor("#909399")
         };
 
-        for(int i = 0; i <= black; ++i)
+        for(int i = 0; i <= LastColor; ++i)
             _colors.insert(static_cast<_Color>(i),palette[i]);
     }
 
@@ -193,6 +194,14 @@ namespace Components {
             palette.setColor(QPalette::Inactive,role,color);
             palette.setColor(QPalette::Active,role,color);
         }
+    }
+
+    void QtComponentsTheme::setPaletteColor(const QColor &color, QWidget *w, QPalette::ColorRole role, QPalette::ColorGroup group)
+    {
+        Q_ASSERT(w);
+        QPalette pale = w->palette();
+        QtComponentsTheme::setPaletteColor(color,pale,role,group);
+        w->setPalette(pale);
     }
 
 

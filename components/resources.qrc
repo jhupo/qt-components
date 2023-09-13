@@ -10,5 +10,9 @@
         <file>icons/checkable/ic_indeterminate_checkbox.svg</file>
         <file>icons/checkable/ic_outline_checkbox.svg</file>
         <file>icons/checkable/ic_outline_radiobutton.svg</file>
+        <file>icons/msg/ic_error.svg</file>
+        <file>icons/msg/ic_info.svg</file>
+        <file>icons/msg/ic_success.svg</file>
+        <file>icons/msg/ic_warn.svg</file>
     </qresource>
 </RCC>

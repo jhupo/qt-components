@@ -25,7 +25,7 @@ namespace Components {
         QHBoxLayout* appBarLayout()const;
 
     protected:
-
+        virtual void paintEvent(QPaintEvent * event);
         virtual bool eventFilter(QObject *watched, QEvent *event);
         const QScopedPointer<QtComponentsDialogPrivate>         d_ptr;
 

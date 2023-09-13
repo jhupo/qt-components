@@ -140,9 +140,14 @@ namespace Components {
         grayB00,
         grayC00,
         grayD00,
+        success,
+        warning,
+        error,
+        info,
         white=gray100,
         black=grayD00,
-        darkGray=gray500
+        darkGray=gray500,
+        LastColor = info,
     }_Color;
 
     typedef enum

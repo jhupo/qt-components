@@ -50,6 +50,9 @@ namespace Components {
         static void setPaletteColor(const QColor& color, QPalette& palette,
                                     QPalette::ColorRole role = QPalette::Window,
                                     QPalette::ColorGroup group = QPalette::NColorGroups);
+        static void setPaletteColor(const QColor& color, QWidget* w,
+                                    QPalette::ColorRole role = QPalette::Window,
+                                    QPalette::ColorGroup group = QPalette::NColorGroups);
 
     protected:
 
